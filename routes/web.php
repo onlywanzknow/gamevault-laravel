@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\ForumController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,6 +23,10 @@ Route::get('/dashboard', [AuthController::class, 'dashboard'])
     ->middleware('auth')
     ->name('dashboard');
 
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
+
 Route::get('/wishlist', [WishlistController::class, 'index'])
     ->middleware('auth')
     ->name('wishlist.index');
@@ -34,6 +39,14 @@ Route::delete('/wishlist/{wishlist}', [WishlistController::class, 'destroy'])
     ->middleware('auth')
     ->name('wishlist.destroy');
 
-Route::post('/logout', [AuthController::class, 'logout'])
+Route::get('/forum', [ForumController::class, 'index'])
     ->middleware('auth')
-    ->name('logout');
+    ->name('forum.index');
+
+Route::post('/forum', [ForumController::class, 'store'])
+    ->middleware('auth')
+    ->name('forum.store');
+
+Route::delete('/forum/{comment}', [ForumController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('forum.destroy');

@@ -5,6 +5,10 @@
     <title>Dashboard - GameVault</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
@@ -45,7 +49,33 @@
             margin-top: 20px;
         }
 
-        button {
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 25px;
+        }
+
+        .quick-card {
+            background: #151d31;
+            border: 1px solid #293552;
+            padding: 22px;
+            border-radius: 18px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .quick-card h3 {
+            margin-top: 0;
+            color: #7aa2ff;
+        }
+
+        .quick-card p {
+            color: #c5cce0;
+            line-height: 1.5;
+        }
+
+        .logout-btn {
             padding: 10px 16px;
             border-radius: 10px;
             border: none;
@@ -63,6 +93,23 @@
             color: #b9ffd0;
             margin-bottom: 18px;
         }
+
+        @media (max-width: 800px) {
+            .quick-links {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+
+            .navbar a {
+                display: inline-block;
+                margin: 5px 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -74,10 +121,11 @@
             <a href="{{ route('home') }}">Home</a>
             <a href="{{ route('games.index') }}">Cari Game</a>
             <a href="{{ route('wishlist.index') }}">Wishlist</a>
+            <a href="{{ route('forum.index') }}">Forum</a>
 
             <form action="{{ route('logout') }}" method="POST" style="display:inline;">
                 @csrf
-                <button type="submit">Logout</button>
+                <button type="submit" class="logout-btn">Logout</button>
             </form>
         </div>
     </nav>
@@ -93,9 +141,26 @@
             <h2>Halo, {{ auth()->user()->name }}</h2>
             <p>Email: {{ auth()->user()->email }}</p>
             <p>
-                Ini adalah dashboard awal. Nanti halaman ini akan berisi ringkasan wishlist,
-                jumlah komentar, dan aktivitas user di GameVault.
+                Ini adalah dashboard awal GameVault. Dari sini kamu bisa membuka katalog game,
+                mengelola wishlist, dan masuk ke forum diskusi game.
             </p>
+        </div>
+
+        <div class="quick-links">
+            <a href="{{ route('games.index') }}" class="quick-card">
+                <h3>Cari Game</h3>
+                <p>Lihat halaman pencarian game. Nanti data akan diambil dari RAWG API.</p>
+            </a>
+
+            <a href="{{ route('wishlist.index') }}" class="quick-card">
+                <h3>Wishlist</h3>
+                <p>Simpan game yang ingin dimainkan atau dibeli ke daftar pribadi.</p>
+            </a>
+
+            <a href="{{ route('forum.index') }}" class="quick-card">
+                <h3>Forum</h3>
+                <p>Tulis komentar dan diskusi sederhana berdasarkan game tertentu.</p>
+            </a>
         </div>
     </div>
 

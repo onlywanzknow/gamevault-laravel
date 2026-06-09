@@ -22,6 +22,11 @@ class User extends Authenticatable
         return $this->hasMany(Wishlist::class);
     }
 
+    public function gameComments()
+    {
+        return $this->hasMany(GameComment::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
