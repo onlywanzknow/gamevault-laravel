@@ -188,8 +188,8 @@
         <div class="nav-links">
             <a href="{{ route('home') }}">Home</a>
             <a href="{{ route('games.index') }}">Cari Game</a>
-            <a href="#">Login</a>
-            <a href="#">Register</a>
+            <a href="{{ route('login') }}">Login</a>
+            <a href="{{ route('register') }}">Register</a>
         </div>
     </nav>
 
@@ -205,7 +205,7 @@
 
             <div class="button-group">
                 <a href="{{ route('games.index') }}" class="btn btn-primary">Mulai Cari Game</a>
-                <a href="#" class="btn btn-secondary">Lihat Wishlist</a>
+                <a href="{{ route('dashboard') }}" class="btn btn-secondary">Dashboard</a>
             </div>
         </div>
 
