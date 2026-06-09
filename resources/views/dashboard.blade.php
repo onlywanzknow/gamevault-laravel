@@ -73,6 +73,7 @@
         <div>
             <a href="{{ route('home') }}">Home</a>
             <a href="{{ route('games.index') }}">Cari Game</a>
+            <a href="{{ route('wishlist.index') }}">Wishlist</a>
 
             <form action="{{ route('logout') }}" method="POST" style="display:inline;">
                 @csrf

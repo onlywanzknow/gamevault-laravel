@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\WishlistController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,6 +21,10 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 Route::get('/dashboard', [AuthController::class, 'dashboard'])
     ->middleware('auth')
     ->name('dashboard');
+
+Route::get('/wishlist', [WishlistController::class, 'index'])
+    ->middleware('auth')
+    ->name('wishlist.index');
 
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
