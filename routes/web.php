@@ -4,14 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\ForumController;
+use App\Http\Controllers\GameController;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/games', function () {
-    return view('games.index');
-})->name('games.index');
+Route::get('/games', [GameController::class, 'index'])
+    ->name('games.index');
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.store');
