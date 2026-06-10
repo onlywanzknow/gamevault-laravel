@@ -229,6 +229,49 @@
             color: #c5cce0;
         }
 
+        .pagination-box {
+            margin-top: 35px;
+            background: #151d31;
+            border: 1px solid #293552;
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .page-info {
+            color: #c5cce0;
+        }
+
+        .page-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-block;
+            padding: 11px 15px;
+            border-radius: 10px;
+            background: #1d263b;
+            color: #d6defa;
+            text-decoration: none;
+            border: 1px solid #34405e;
+            font-weight: bold;
+        }
+
+        .page-btn:hover {
+            background: #26334f;
+        }
+
+        .page-btn.disabled {
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
         .rawg-credit {
             margin-top: 35px;
             color: #8892b0;
@@ -268,6 +311,19 @@
             .search-form {
                 grid-template-columns: 1fr;
             }
+
+            .pagination-box {
+                align-items: stretch;
+            }
+
+            .page-buttons {
+                width: 100%;
+            }
+
+            .page-btn {
+                flex: 1;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -296,11 +352,13 @@
 
         <p class="subtitle">
             Cari informasi game dari RAWG API. Kamu bisa mencari berdasarkan nama,
-            memilih genre, memilih platform, dan mengatur urutan hasil game.
+            memilih genre, memilih platform, mengatur urutan hasil game, dan membuka halaman berikutnya.
         </p>
 
         <div class="search-box">
             <form action="{{ route('games.index') }}" method="GET" class="search-form">
+                <input type="hidden" name="page" value="1">
+
                 <div class="form-group">
                     <label>Nama Game</label>
                     <input
@@ -367,7 +425,9 @@
                 <div class="filter-summary">
                     Genre: {{ $genres[$selectedGenre] ?? 'Semua Genre' }} |
                     Platform: {{ $platforms[$selectedPlatform] ?? 'Semua Platform' }} |
-                    Urutan: {{ $orderings[$selectedOrdering] ?? 'Rating Tertinggi' }}
+                    Urutan: {{ $orderings[$selectedOrdering] ?? 'Rating Tertinggi' }} |
+                    Halaman: {{ $currentPage }} |
+                    Total data API: {{ number_format($count) }}
                 </div>
             </div>
         @endif
@@ -426,6 +486,28 @@
                         </div>
                     </div>
                 @endforeach
+            </div>
+
+            <div class="pagination-box">
+                <div class="page-info">
+                    Halaman {{ $currentPage }}
+                </div>
+
+                <div class="page-buttons">
+                    <a
+                        href="{{ route('games.index', array_merge(request()->except('page'), ['page' => max(1, $currentPage - 1)])) }}"
+                        class="page-btn {{ $previous ? '' : 'disabled' }}"
+                    >
+                        ← Sebelumnya
+                    </a>
+
+                    <a
+                        href="{{ route('games.index', array_merge(request()->except('page'), ['page' => $currentPage + 1])) }}"
+                        class="page-btn {{ $next ? '' : 'disabled' }}"
+                    >
+                        Berikutnya →
+                    </a>
+                </div>
             </div>
         @endif
 

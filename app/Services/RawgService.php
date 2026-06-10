@@ -17,11 +17,15 @@ class RawgService
         ?string $search = null,
         ?string $genre = null,
         ?string $parentPlatform = null,
-        string $ordering = '-rating'
+        string $ordering = '-rating',
+        int $page = 1
     ): array {
         if (!$this->hasApiKey()) {
             return [
                 'results' => [],
+                'count' => 0,
+                'next' => null,
+                'previous' => null,
                 'error' => 'RAWG_API_KEY belum diisi di file .env.',
             ];
         }
@@ -30,6 +34,7 @@ class RawgService
             'key' => env('RAWG_API_KEY'),
             'page_size' => 12,
             'ordering' => $ordering,
+            'page' => max(1, $page),
         ];
 
         if ($search) {
@@ -52,17 +57,26 @@ class RawgService
             if (!$response->successful()) {
                 return [
                     'results' => [],
+                    'count' => 0,
+                    'next' => null,
+                    'previous' => null,
                     'error' => 'Gagal mengambil data dari RAWG API. Status: ' . $response->status(),
                 ];
             }
 
             return [
                 'results' => $response->json('results') ?? [],
+                'count' => $response->json('count') ?? 0,
+                'next' => $response->json('next'),
+                'previous' => $response->json('previous'),
                 'error' => null,
             ];
         } catch (\Exception $e) {
             return [
                 'results' => [],
+                'count' => 0,
+                'next' => null,
+                'previous' => null,
                 'error' => 'Terjadi masalah koneksi ke RAWG API: ' . $e->getMessage(),
             ];
         }

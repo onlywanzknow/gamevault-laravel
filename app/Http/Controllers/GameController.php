@@ -46,6 +46,7 @@ class GameController extends Controller
         $selectedGenre = $request->get('genre', '');
         $selectedPlatform = $request->get('platform', '');
         $selectedOrdering = $request->get('ordering', '-rating');
+        $currentPage = max(1, (int) $request->get('page', 1));
 
         if (!array_key_exists($selectedGenre, $genres)) {
             $selectedGenre = '';
@@ -63,14 +64,22 @@ class GameController extends Controller
             $search !== '' ? $search : null,
             $selectedGenre !== '' ? $selectedGenre : null,
             $selectedPlatform !== '' ? $selectedPlatform : null,
-            $selectedOrdering
+            $selectedOrdering,
+            $currentPage
         );
 
         $games = $data['results'];
+        $count = $data['count'];
+        $next = $data['next'];
+        $previous = $data['previous'];
         $error = $data['error'];
 
         return view('games.index', compact(
             'games',
+            'count',
+            'next',
+            'previous',
+            'currentPage',
             'search',
             'error',
             'genres',
