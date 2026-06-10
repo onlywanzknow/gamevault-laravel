@@ -245,6 +245,104 @@
             color: #c5cce0;
         }
 
+        .comment-form {
+            margin-top: 18px;
+            background: #0f1729;
+            border: 1px solid #293552;
+            border-radius: 16px;
+            padding: 18px;
+        }
+
+        .comment-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d6defa;
+            font-size: 14px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            min-height: 120px;
+            resize: vertical;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #34405e;
+            background: #101624;
+            color: white;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .comment-form textarea::placeholder {
+            color: #7d869c;
+        }
+
+        .comment-btn {
+            margin-top: 12px;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 10px;
+            background: #4169e1;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .comment-btn:hover {
+            background: #3158c9;
+        }
+
+        .comment-list {
+            margin-top: 22px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .comment-card {
+            background: #0f1729;
+            border: 1px solid #293552;
+            border-radius: 16px;
+            padding: 18px;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+
+        .comment-user {
+            color: #7aa2ff;
+            font-weight: bold;
+        }
+
+        .comment-date {
+            color: #8892b0;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .comment-text {
+            color: #e6ebff;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .delete-btn {
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: none;
+            background: #d9534f;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #c13f3b;
+        }
+
         .rawg-credit {
             margin-top: 35px;
             color: #8892b0;
@@ -278,6 +376,10 @@
             .container {
                 padding: 35px 6%;
             }
+
+            .comment-header {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -309,7 +411,7 @@
         @endif
 
         @if (session('error'))
-            <div class="alert-error">{{ session('error') }}</div>
+            <div class="alert-error" style="margin-bottom: 18px;">{{ session('error') }}</div>
         @endif
 
         @if ($errors->any())
@@ -474,6 +576,68 @@
                                     <strong>Recommended:</strong>
                                     <div class="requirement-text">{{ $requirement['recommended'] }}</div>
                                 @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+            <div class="section">
+                <h2>Diskusi Game</h2>
+
+                <p class="description" style="margin-top: 0;">
+                    Bagian ini adalah forum komunitas khusus untuk game
+                    <strong>{{ $game['name'] ?? 'ini' }}</strong>.
+                </p>
+
+                @auth
+                    <div class="comment-form">
+                        <form action="{{ route('forum.store') }}" method="POST">
+                            @csrf
+
+                            <input type="hidden" name="rawg_game_id" value="{{ $game['id'] }}">
+                            <input type="hidden" name="game_name" value="{{ $game['name'] ?? 'Unknown Game' }}">
+
+                            <label>Komentar</label>
+                            <textarea name="comment" placeholder="Tulis pendapat kamu tentang game ini..." required></textarea>
+
+                            <button type="submit" class="comment-btn">Kirim Komentar</button>
+                        </form>
+                    </div>
+                @else
+                    <div class="login-note">
+                        Login dulu untuk ikut berdiskusi.
+                        <a href="{{ route('login') }}">Login sekarang</a>
+                    </div>
+                @endauth
+
+                @if ($comments->isEmpty())
+                    <div class="empty-box" style="margin-top: 18px;">
+                        Belum ada komentar untuk game ini.
+                    </div>
+                @else
+                    <div class="comment-list">
+                        @foreach ($comments as $comment)
+                            <div class="comment-card">
+                                <div class="comment-header">
+                                    <div>
+                                        <div class="comment-user">{{ $comment->user->name ?? 'User' }}</div>
+                                        <div class="comment-date">{{ $comment->created_at->format('d M Y H:i') }}</div>
+                                    </div>
+
+                                    @if ($comment->user_id === auth()->id())
+                                        <form action="{{ route('forum.destroy', $comment->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit" class="delete-btn" onclick="return confirm('Hapus komentar ini?')">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+
+                                <div class="comment-text">{{ $comment->comment }}</div>
                             </div>
                         @endforeach
                     </div>

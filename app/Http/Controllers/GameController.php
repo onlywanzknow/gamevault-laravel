@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GameComment;
 use App\Services\RawgService;
 use Illuminate\Http\Request;
 
@@ -26,11 +27,17 @@ class GameController extends Controller
         $error = $detailData['error'];
 
         $screenshots = [];
+        $comments = collect();
 
         if ($game) {
             $screenshots = $rawgService->getGameScreenshots($id);
+
+            $comments = GameComment::with('user')
+                ->where('rawg_game_id', $game['id'])
+                ->latest()
+                ->get();
         }
 
-        return view('games.show', compact('game', 'screenshots', 'error'));
+        return view('games.show', compact('game', 'screenshots', 'comments', 'error'));
     }
 }
