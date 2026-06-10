@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Wishlist;
+use App\Models\GameComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -58,7 +60,33 @@ class AuthController extends Controller
 
     public function dashboard()
     {
-        return view('dashboard');
+        $userId = auth()->id();
+
+        $wishlistCount = Wishlist::where('user_id', $userId)->count();
+
+        $commentCount = GameComment::where('user_id', $userId)->count();
+
+        $favoriteCount = Wishlist::where('user_id', $userId)
+            ->where('status', 'Favorit')
+            ->count();
+
+        $recentWishlists = Wishlist::where('user_id', $userId)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $recentComments = GameComment::where('user_id', $userId)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('dashboard', compact(
+            'wishlistCount',
+            'commentCount',
+            'favoriteCount',
+            'recentWishlists',
+            'recentComments'
+        ));
     }
 
     public function logout(Request $request)
