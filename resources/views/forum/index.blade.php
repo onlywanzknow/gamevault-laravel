@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Forum Game - GameVault</title>
+    <title>Forum Komunitas - GameVault</title>
 
     <style>
         * {
@@ -34,7 +34,7 @@
         .navbar a {
             color: #d6defa;
             text-decoration: none;
-            margin-right: 18px;
+            margin-left: 18px;
         }
 
         .container {
@@ -43,11 +43,13 @@
 
         h1 {
             margin-bottom: 10px;
+            font-size: 38px;
         }
 
         .subtitle {
             color: #c5cce0;
             line-height: 1.6;
+            max-width: 850px;
         }
 
         .alert-success {
@@ -68,54 +70,63 @@
             margin-bottom: 18px;
         }
 
-        .form-box {
-            margin-top: 30px;
+        .top-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .primary-link {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 10px;
+            background: #4169e1;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .secondary-link {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 10px;
+            background: #1d263b;
+            color: #d6defa;
+            text-decoration: none;
+            border: 1px solid #34405e;
+            font-weight: bold;
+        }
+
+        .search-box {
+            margin-top: 28px;
             background: #151d31;
             border: 1px solid #293552;
             border-radius: 18px;
-            padding: 24px;
+            padding: 22px;
         }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
+        .search-form {
+            display: flex;
+            gap: 12px;
         }
 
-        label {
-            display: block;
-            margin-bottom: 6px;
-            color: #d6defa;
-            font-size: 14px;
-        }
-
-        input,
-        textarea {
-            width: 100%;
-            max-width: 100%;
-            padding: 12px;
+        input {
+            flex: 1;
+            padding: 13px;
             border-radius: 10px;
             border: 1px solid #34405e;
             background: #0f1729;
             color: white;
-            display: block;
-            font-size: 14px;
+            font-size: 15px;
         }
 
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-            margin-top: 6px;
-        }
-
-        input::placeholder,
-        textarea::placeholder {
+        input::placeholder {
             color: #7d869c;
         }
 
-        .submit-btn {
-            margin-top: 18px;
-            padding: 12px 18px;
+        .search-btn {
+            padding: 13px 18px;
             border-radius: 10px;
             border: none;
             background: #4169e1;
@@ -124,12 +135,26 @@
             cursor: pointer;
         }
 
-        .submit-btn:hover {
-            background: #3158c9;
+        .reset-link {
+            display: inline-block;
+            margin-top: 12px;
+            color: #7aa2ff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .summary-box {
+            margin-top: 28px;
+            background: #151d31;
+            border: 1px solid #293552;
+            border-radius: 18px;
+            padding: 20px;
+            color: #c5cce0;
+            line-height: 1.6;
         }
 
         .comment-list {
-            margin-top: 35px;
+            margin-top: 28px;
             display: grid;
             gap: 18px;
         }
@@ -151,49 +176,64 @@
         .game-name {
             color: #7aa2ff;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 20px;
+            margin-bottom: 4px;
         }
 
         .meta {
             color: #aeb8d4;
             font-size: 13px;
-            margin-top: 4px;
+            line-height: 1.5;
         }
 
         .comment-text {
             color: #e6ebff;
             line-height: 1.6;
             white-space: pre-line;
+            margin-top: 12px;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .detail-btn {
+            display: inline-block;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: #1d263b;
+            color: #d6defa;
+            text-decoration: none;
+            border: 1px solid #34405e;
+            font-weight: bold;
+            font-size: 14px;
         }
 
         .delete-btn {
-            padding: 8px 12px;
+            padding: 10px 14px;
             border-radius: 10px;
             border: none;
             background: #d9534f;
             color: white;
             font-weight: bold;
             cursor: pointer;
-        }
-
-        .delete-btn:hover {
-            background: #c13f3b;
+            font-size: 14px;
         }
 
         .empty-box {
-            margin-top: 30px;
+            margin-top: 28px;
             background: #151d31;
             border: 1px solid #293552;
             border-radius: 18px;
             padding: 28px;
             color: #c5cce0;
+            line-height: 1.6;
         }
 
-        @media (max-width: 700px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
+        @media (max-width: 800px) {
             .navbar {
                 flex-direction: column;
                 gap: 12px;
@@ -207,6 +247,10 @@
 
             .container {
                 padding: 35px 6%;
+            }
+
+            .search-form {
+                flex-direction: column;
             }
 
             .comment-header {
@@ -229,13 +273,6 @@
     </nav>
 
     <div class="container">
-        <h1>Forum Game</h1>
-
-        <p class="subtitle">
-            Tulis komentar atau pendapat tentang game tertentu. Untuk tahap ini,
-            komentar masih memakai ID game manual sebelum nanti disambungkan ke halaman detail RAWG API.
-        </p>
-
         @if (session('success'))
             <div class="alert-success">{{ session('success') }}</div>
         @endif
@@ -248,34 +285,47 @@
             </div>
         @endif
 
-        <div class="form-box">
-            <h2>Tulis Komentar Game</h2>
+        <h1>Forum Komunitas</h1>
 
-            <form action="{{ route('forum.store') }}" method="POST">
-                @csrf
+        <p class="subtitle">
+            Halaman ini menampilkan semua komentar dari pengguna GameVault.
+            Untuk menulis komentar baru, buka halaman detail game lalu gunakan bagian Diskusi Game.
+        </p>
 
-                <div class="form-grid">
-                    <div>
-                        <label>ID Game RAWG / ID Sementara</label>
-                        <input type="number" name="rawg_game_id" placeholder="Contoh: 3498" required>
-                    </div>
+        <div class="top-actions">
+            <a href="{{ route('games.index') }}" class="primary-link">Cari Game untuk Diskusi</a>
+            <a href="{{ route('dashboard') }}" class="secondary-link">Kembali ke Dashboard</a>
+        </div>
 
-                    <div>
-                        <label>Nama Game</label>
-                        <input type="text" name="game_name" placeholder="Contoh: GTA V" required>
-                    </div>
-                </div>
+        <div class="search-box">
+            <form action="{{ route('forum.index') }}" method="GET" class="search-form">
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ $search }}"
+                    placeholder="Cari berdasarkan nama game atau isi komentar"
+                >
 
-                <label style="margin-top: 18px;">Komentar</label>
-                <textarea name="comment" placeholder="Tulis pendapat kamu tentang game ini..." required></textarea>
-
-                <button type="submit" class="submit-btn">Kirim Komentar</button>
+                <button type="submit" class="search-btn">Cari</button>
             </form>
+
+            @if ($search)
+                <a href="{{ route('forum.index') }}" class="reset-link">Reset pencarian</a>
+            @endif
+        </div>
+
+        <div class="summary-box">
+            @if ($search)
+                Menampilkan hasil forum untuk pencarian: <strong>{{ $search }}</strong>.
+            @else
+                Total komentar forum saat ini: <strong>{{ $comments->count() }}</strong>.
+            @endif
         </div>
 
         @if ($comments->isEmpty())
             <div class="empty-box">
-                Belum ada komentar. Coba tulis komentar pertama untuk salah satu game.
+                Belum ada komentar yang cocok. Buka halaman Cari Game, pilih salah satu game,
+                lalu tulis komentar dari halaman detail game.
             </div>
         @else
             <div class="comment-list">
@@ -284,12 +334,21 @@
                         <div class="comment-header">
                             <div>
                                 <div class="game-name">{{ $comment->game_name }}</div>
+
                                 <div class="meta">
-                                    ID Game: {{ $comment->rawg_game_id }} |
+                                    ID Game: {{ $comment->rawg_game_id }} <br>
                                     Oleh: {{ $comment->user->name ?? 'User' }} |
                                     {{ $comment->created_at->format('d M Y H:i') }}
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="comment-text">{{ $comment->comment }}</div>
+
+                        <div class="comment-actions">
+                            <a href="{{ route('games.show', $comment->rawg_game_id) }}" class="detail-btn">
+                                Buka Detail Game
+                            </a>
 
                             @if ($comment->user_id === auth()->id())
                                 <form action="{{ route('forum.destroy', $comment->id) }}" method="POST">
@@ -297,13 +356,11 @@
                                     @method('DELETE')
 
                                     <button type="submit" class="delete-btn" onclick="return confirm('Hapus komentar ini?')">
-                                        Hapus
+                                        Hapus Komentar
                                     </button>
                                 </form>
                             @endif
                         </div>
-
-                        <div class="comment-text">{{ $comment->comment }}</div>
                     </div>
                 @endforeach
             </div>

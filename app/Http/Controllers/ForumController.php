@@ -7,13 +7,21 @@ use Illuminate\Http\Request;
 
 class ForumController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = trim($request->get('search', ''));
+
         $comments = GameComment::with('user')
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($subQuery) use ($search) {
+                    $subQuery->where('game_name', 'like', '%' . $search . '%')
+                        ->orWhere('comment', 'like', '%' . $search . '%');
+                });
+            })
             ->latest()
             ->get();
 
-        return view('forum.index', compact('comments'));
+        return view('forum.index', compact('comments', 'search'));
     }
 
     public function store(Request $request)
