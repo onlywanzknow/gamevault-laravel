@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Cari Game - GameVault</title>
+    <title>Forum Komunitas - GameVault</title>
 
     <style>
         * {
@@ -42,8 +42,8 @@
         }
 
         h1 {
-            font-size: 38px;
             margin-bottom: 10px;
+            font-size: 38px;
         }
 
         .subtitle {
@@ -52,17 +52,63 @@
             max-width: 850px;
         }
 
+        .alert-success {
+            background: #12351f;
+            border: 1px solid #2f8f4e;
+            padding: 12px;
+            border-radius: 10px;
+            color: #b9ffd0;
+            margin-bottom: 18px;
+        }
+
+        .alert-error {
+            background: #3a1d1d;
+            border: 1px solid #914646;
+            padding: 12px;
+            border-radius: 10px;
+            color: #ffdada;
+            margin-bottom: 18px;
+        }
+
+        .top-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .primary-link {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 10px;
+            background: #4169e1;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .secondary-link {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 10px;
+            background: #1d263b;
+            color: #d6defa;
+            text-decoration: none;
+            border: 1px solid #34405e;
+            font-weight: bold;
+        }
+
         .search-box {
-            margin-top: 30px;
+            margin-top: 28px;
             background: #151d31;
-            padding: 24px;
-            border-radius: 18px;
             border: 1px solid #293552;
+            border-radius: 18px;
+            padding: 22px;
         }
 
         .search-form {
             display: grid;
-            grid-template-columns: 1.4fr 1fr 1fr 1fr auto;
+            grid-template-columns: 1.5fr 1fr auto;
             gap: 12px;
             align-items: end;
         }
@@ -77,7 +123,7 @@
         input,
         select {
             width: 100%;
-            padding: 14px;
+            padding: 13px;
             border-radius: 10px;
             border: 1px solid #34405e;
             background: #0f1729;
@@ -89,148 +135,116 @@
             color: #7d869c;
         }
 
-        button {
-            padding: 14px 20px;
+        .search-btn {
+            padding: 13px 18px;
             border-radius: 10px;
             border: none;
             background: #4169e1;
             color: white;
             font-weight: bold;
             cursor: pointer;
-            white-space: nowrap;
-        }
-
-        button:hover {
-            background: #3158c9;
         }
 
         .reset-link {
             display: inline-block;
-            margin-top: 14px;
+            margin-top: 12px;
             color: #7aa2ff;
             text-decoration: none;
             font-size: 14px;
         }
 
-        .alert-error {
-            margin-top: 24px;
-            background: #3a1d1d;
-            border: 1px solid #914646;
-            padding: 14px;
-            border-radius: 10px;
-            color: #ffdada;
-        }
-
-        .result-info {
-            margin-top: 30px;
-            color: #c5cce0;
-            line-height: 1.7;
-        }
-
-        .filter-summary {
-            margin-top: 10px;
-            color: #aeb8d4;
-            font-size: 14px;
-        }
-
-        .games-grid {
-            margin-top: 25px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 22px;
-        }
-
-        .game-card {
+        .summary-box {
+            margin-top: 28px;
             background: #151d31;
             border: 1px solid #293552;
             border-radius: 18px;
-            overflow: hidden;
+            padding: 20px;
+            color: #c5cce0;
+            line-height: 1.6;
+        }
+
+        .comment-list {
+            margin-top: 28px;
+            display: grid;
+            gap: 18px;
+        }
+
+        .comment-card {
+            background: #151d31;
+            border: 1px solid #293552;
+            border-radius: 18px;
+            padding: 20px;
+        }
+
+        .comment-header {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 12px;
         }
 
-        .game-card img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            background: #0f1729;
-        }
-
-        .image-placeholder {
-            height: 150px;
-            background: #0f1729;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #8892b0;
-        }
-
-        .game-body {
-            padding: 16px;
-            flex: 1;
-        }
-
-        .game-title {
-            font-size: 18px;
+        .game-name {
+            color: #7aa2ff;
             font-weight: bold;
-            margin-bottom: 8px;
+            font-size: 20px;
+            margin-bottom: 4px;
         }
 
-        .game-info {
+        .meta {
             color: #aeb8d4;
-            font-size: 14px;
-            margin-bottom: 7px;
-            line-height: 1.4;
+            font-size: 13px;
+            line-height: 1.5;
         }
 
-        .badge-row {
-            margin-top: 10px;
+        .comment-text {
+            color: #e6ebff;
+            line-height: 1.6;
+            white-space: pre-line;
+            margin-top: 12px;
+        }
+
+        .comment-actions {
             display: flex;
+            gap: 10px;
             flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .badge {
-            padding: 5px 9px;
-            border-radius: 999px;
-            background: #1d263b;
-            border: 1px solid #34405e;
-            color: #d6defa;
-            font-size: 12px;
-        }
-
-        .card-footer {
-            padding: 0 16px 16px 16px;
+            margin-top: 16px;
         }
 
         .detail-btn {
-            display: block;
-            width: 100%;
-            text-align: center;
-            padding: 11px;
+            display: inline-block;
+            padding: 10px 14px;
             border-radius: 10px;
             background: #1d263b;
             color: #d6defa;
             text-decoration: none;
             border: 1px solid #34405e;
             font-weight: bold;
+            font-size: 14px;
         }
 
-        .detail-btn:hover {
-            background: #25324f;
+        .delete-btn {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: none;
+            background: #d9534f;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
         }
 
         .empty-box {
-            margin-top: 30px;
+            margin-top: 28px;
             background: #151d31;
             border: 1px solid #293552;
             border-radius: 18px;
             padding: 28px;
             color: #c5cce0;
+            line-height: 1.6;
         }
 
         .pagination-box {
-            margin-top: 35px;
+            margin-top: 28px;
             background: #151d31;
             border: 1px solid #293552;
             border-radius: 18px;
@@ -244,6 +258,7 @@
 
         .page-info {
             color: #c5cce0;
+            line-height: 1.6;
         }
 
         .page-buttons {
@@ -272,27 +287,17 @@
             pointer-events: none;
         }
 
-        .rawg-credit {
-            margin-top: 35px;
-            color: #8892b0;
-            font-size: 14px;
-        }
-
-        .rawg-credit a {
-            color: #7aa2ff;
-        }
-
-        @media (max-width: 1050px) {
+        @media (max-width: 900px) {
             .search-form {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
             }
 
-            .search-form button {
+            .search-btn {
                 width: 100%;
             }
         }
 
-        @media (max-width: 700px) {
+        @media (max-width: 800px) {
             .navbar {
                 flex-direction: column;
                 gap: 12px;
@@ -308,8 +313,8 @@
                 padding: 35px 6%;
             }
 
-            .search-form {
-                grid-template-columns: 1fr;
+            .comment-header {
+                flex-direction: column;
             }
 
             .pagination-box {
@@ -335,186 +340,154 @@
         <div>
             <a href="{{ route('home') }}">Home</a>
             <a href="{{ route('games.index') }}">Cari Game</a>
-
-            @auth
-                <a href="{{ route('wishlist.index') }}">Wishlist</a>
-                <a href="{{ route('forum.index') }}">Forum</a>
-                <a href="{{ route('dashboard') }}">Dashboard</a>
-                <a href="{{ route('profile.edit') }}">Profile</a>
-            @else
-                <a href="{{ route('login') }}">Login</a>
-                <a href="{{ route('register') }}">Register</a>
-            @endauth
+            <a href="{{ route('wishlist.index') }}">Wishlist</a>
+            <a href="{{ route('dashboard') }}">Dashboard</a>
+            <a href="{{ route('profile.edit') }}">Profile</a>
         </div>
     </nav>
 
     <div class="container">
-        <h1>Cari Game</h1>
+        @if (session('success'))
+            <div class="alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert-error">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
+
+        <h1>Forum Komunitas</h1>
 
         <p class="subtitle">
-            Cari informasi game dari RAWG API. Kamu bisa mencari berdasarkan nama,
-            memilih genre, memilih platform, mengatur urutan hasil game, dan membuka halaman berikutnya.
+            Halaman ini menampilkan semua komentar dari pengguna GameVault.
+            Untuk menulis komentar baru, buka halaman detail game lalu gunakan bagian Diskusi Game.
         </p>
 
-        <div class="search-box">
-            <form action="{{ route('games.index') }}" method="GET" class="search-form">
-                <input type="hidden" name="page" value="1">
+        <div class="top-actions">
+            <a href="{{ route('games.index') }}" class="primary-link">Cari Game untuk Diskusi</a>
+            <a href="{{ route('dashboard') }}" class="secondary-link">Kembali ke Dashboard</a>
+        </div>
 
+        <div class="search-box">
+            <form action="{{ route('forum.index') }}" method="GET" class="search-form">
                 <div class="form-group">
-                    <label>Nama Game</label>
+                    <label>Cari Forum</label>
                     <input
                         type="text"
                         name="search"
                         value="{{ $search }}"
-                        placeholder="Contoh: Minecraft, GTA V, Valorant"
+                        placeholder="Cari berdasarkan nama game atau isi komentar"
                     >
                 </div>
 
                 <div class="form-group">
-                    <label>Genre</label>
-                    <select name="genre">
-                        @foreach ($genres as $value => $label)
-                            <option value="{{ $value }}" {{ $selectedGenre === $value ? 'selected' : '' }}>
-                                {{ $label }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Platform</label>
-                    <select name="platform">
-                        @foreach ($platforms as $value => $label)
-                            <option value="{{ $value }}" {{ $selectedPlatform === $value ? 'selected' : '' }}>
-                                {{ $label }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="form-group">
                     <label>Urutkan</label>
-                    <select name="ordering">
-                        @foreach ($orderings as $value => $label)
-                            <option value="{{ $value }}" {{ $selectedOrdering === $value ? 'selected' : '' }}>
+                    <select name="sort">
+                        @foreach ($sortOptions as $value => $label)
+                            <option value="{{ $value }}" {{ $selectedSort === $value ? 'selected' : '' }}>
                                 {{ $label }}
                             </option>
                         @endforeach
                     </select>
                 </div>
 
-                <button type="submit">Terapkan</button>
+                <button type="submit" class="search-btn">Terapkan</button>
             </form>
 
-            <a href="{{ route('games.index') }}" class="reset-link">Reset pencarian dan filter</a>
+            @if ($search || $selectedSort !== 'latest')
+                <a href="{{ route('forum.index') }}" class="reset-link">Reset forum</a>
+            @endif
         </div>
 
-        @if ($error)
-            <div class="alert-error">
-                {{ $error }}
-            </div>
-        @endif
+        <div class="summary-box">
+            @if ($search || $selectedSort !== 'latest')
+                Menampilkan <strong>{{ $comments->total() }}</strong> hasil forum
 
-        @if (!$error)
-            <div class="result-info">
                 @if ($search)
-                    Hasil pencarian untuk: <strong>{{ $search }}</strong>
-                @else
-                    Menampilkan daftar game dari RAWG API.
+                    untuk pencarian <strong>{{ $search }}</strong>
                 @endif
 
-                <div class="filter-summary">
-                    Genre: {{ $genres[$selectedGenre] ?? 'Semua Genre' }} |
-                    Platform: {{ $platforms[$selectedPlatform] ?? 'Semua Platform' }} |
-                    Urutan: {{ $orderings[$selectedOrdering] ?? 'Rating Tertinggi' }} |
-                    Halaman: {{ $currentPage }} |
-                    Total data API: {{ number_format($count) }}
-                </div>
-            </div>
-        @endif
+                dengan urutan <strong>{{ $sortOptions[$selectedSort] ?? 'Komentar Terbaru' }}</strong>.
+            @else
+                Total komentar forum saat ini: <strong>{{ $comments->total() }}</strong>.
+            @endif
+        </div>
 
-        @if (!$error && count($games) === 0)
+        @if ($comments->total() === 0)
             <div class="empty-box">
-                Tidak ada game yang ditemukan. Coba ubah kata kunci atau filter.
+                Belum ada komentar yang cocok. Buka halaman Cari Game, pilih salah satu game,
+                lalu tulis komentar dari halaman detail game.
             </div>
-        @endif
+        @else
+            <div class="comment-list">
+                @foreach ($comments as $comment)
+                    <div class="comment-card">
+                        <div class="comment-header">
+                            <div>
+                                <div class="game-name">{{ $comment->game_name }}</div>
 
-        @if (!$error && count($games) > 0)
-            <div class="games-grid">
-                @foreach ($games as $game)
-                    @php
-                        $gameGenres = collect($game['genres'] ?? [])->pluck('name')->take(3)->join(', ');
-                        $gamePlatforms = collect($game['platforms'] ?? [])->pluck('platform.name')->take(3)->join(', ');
-                    @endphp
-
-                    <div class="game-card">
-                        @if (!empty($game['background_image']))
-                            <img src="{{ $game['background_image'] }}" alt="{{ $game['name'] ?? 'Game Image' }}">
-                        @else
-                            <div class="image-placeholder">No Image</div>
-                        @endif
-
-                        <div class="game-body">
-                            <div class="game-title">{{ $game['name'] ?? 'Unknown Game' }}</div>
-
-                            <div class="game-info">
-                                Rating: {{ $game['rating'] ?? '-' }}
-                            </div>
-
-                            <div class="game-info">
-                                Rilis: {{ $game['released'] ?? '-' }}
-                            </div>
-
-                            <div class="game-info">
-                                Platform: {{ $gamePlatforms ?: '-' }}
-                            </div>
-
-                            <div class="badge-row">
-                                @if ($gameGenres)
-                                    @foreach (explode(', ', $gameGenres) as $genre)
-                                        <span class="badge">{{ $genre }}</span>
-                                    @endforeach
-                                @else
-                                    <span class="badge">No Genre</span>
-                                @endif
+                                <div class="meta">
+                                    ID Game: {{ $comment->rawg_game_id }} <br>
+                                    Oleh: {{ $comment->user->name ?? 'User' }} |
+                                    {{ $comment->created_at->format('d M Y H:i') }}
+                                </div>
                             </div>
                         </div>
 
-                        <div class="card-footer">
-                            <a href="{{ route('games.show', $game['id']) }}" class="detail-btn">
-                                Lihat Detail
+                        <div class="comment-text">{{ $comment->comment }}</div>
+
+                        <div class="comment-actions">
+                            <a href="{{ route('games.show', $comment->rawg_game_id) }}" class="detail-btn">
+                                Buka Detail Game
                             </a>
+
+                            @if ($comment->user_id === auth()->id())
+                                <form action="{{ route('forum.destroy', $comment->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" class="delete-btn" onclick="return confirm('Hapus komentar ini?')">
+                                        Hapus Komentar
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 @endforeach
             </div>
 
-            <div class="pagination-box">
-                <div class="page-info">
-                    Halaman {{ $currentPage }}
-                </div>
+            @if ($comments->hasPages())
+                <div class="pagination-box">
+                    <div class="page-info">
+                        Halaman {{ $comments->currentPage() }} dari {{ $comments->lastPage() }}
+                        <br>
+                        Menampilkan {{ $comments->firstItem() }} - {{ $comments->lastItem() }}
+                        dari {{ $comments->total() }} komentar
+                    </div>
 
-                <div class="page-buttons">
-                    <a
-                        href="{{ route('games.index', array_merge(request()->except('page'), ['page' => max(1, $currentPage - 1)])) }}"
-                        class="page-btn {{ $previous ? '' : 'disabled' }}"
-                    >
-                        ← Sebelumnya
-                    </a>
+                    <div class="page-buttons">
+                        @if ($comments->onFirstPage())
+                            <span class="page-btn disabled">← Sebelumnya</span>
+                        @else
+                            <a href="{{ $comments->previousPageUrl() }}" class="page-btn">
+                                ← Sebelumnya
+                            </a>
+                        @endif
 
-                    <a
-                        href="{{ route('games.index', array_merge(request()->except('page'), ['page' => $currentPage + 1])) }}"
-                        class="page-btn {{ $next ? '' : 'disabled' }}"
-                    >
-                        Berikutnya →
-                    </a>
+                        @if ($comments->hasMorePages())
+                            <a href="{{ $comments->nextPageUrl() }}" class="page-btn">
+                                Berikutnya →
+                            </a>
+                        @else
+                            <span class="page-btn disabled">Berikutnya →</span>
+                        @endif
+                    </div>
                 </div>
-            </div>
+            @endif
         @endif
-
-        <div class="rawg-credit">
-            Data game disediakan oleh <a href="https://rawg.io" target="_blank">RAWG</a>.
-        </div>
     </div>
 
 </body>

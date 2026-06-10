@@ -9,20 +9,57 @@ class ForumController extends Controller
 {
     public function index(Request $request)
     {
-        $search = trim($request->get('search', ''));
+        $search = trim((string) ($request->query('search') ?? ''));
+        $selectedSort = (string) ($request->query('sort') ?? 'latest');
 
-        $comments = GameComment::with('user')
-            ->when($search !== '', function ($query) use ($search) {
-                $query->where(function ($subQuery) use ($search) {
-                    $subQuery->where('game_name', 'like', '%' . $search . '%')
-                        ->orWhere('comment', 'like', '%' . $search . '%');
-                });
-            })
-            ->latest()
+        $sortOptions = [
+            'latest' => 'Komentar Terbaru',
+            'oldest' => 'Komentar Terlama',
+            'game_asc' => 'Nama Game A-Z',
+            'game_desc' => 'Nama Game Z-A',
+        ];
+
+        if (!array_key_exists($selectedSort, $sortOptions)) {
+            $selectedSort = 'latest';
+        }
+
+        $commentsQuery = GameComment::with('user');
+
+        if ($search !== '') {
+            $commentsQuery->where(function ($query) use ($search) {
+                $query->where('game_name', 'like', '%' . $search . '%')
+                    ->orWhere('comment', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($selectedSort === 'oldest') {
+            $commentsQuery
+                ->orderBy('created_at', 'asc')
+                ->orderBy('id', 'asc');
+        } elseif ($selectedSort === 'game_asc') {
+            $commentsQuery
+                ->orderByRaw('LOWER(game_name) ASC')
+                ->orderBy('created_at', 'desc');
+        } elseif ($selectedSort === 'game_desc') {
+            $commentsQuery
+                ->orderByRaw('LOWER(game_name) DESC')
+                ->orderBy('created_at', 'desc');
+        } else {
+            $commentsQuery
+                ->orderBy('created_at', 'desc')
+                ->orderBy('id', 'desc');
+        }
+
+        $comments = $commentsQuery
             ->paginate(8)
             ->withQueryString();
 
-        return view('forum.index', compact('comments', 'search'));
+        return view('forum.index', compact(
+            'comments',
+            'search',
+            'selectedSort',
+            'sortOptions'
+        ));
     }
 
     public function store(Request $request)
