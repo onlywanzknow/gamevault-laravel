@@ -42,7 +42,8 @@ class WishlistController extends Controller
                 $query->where('status', $selectedStatus);
             })
             ->latest()
-            ->get();
+            ->paginate(8)
+            ->withQueryString();
 
         return view('wishlists.index', compact(
             'wishlists',

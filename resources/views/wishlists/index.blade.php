@@ -311,6 +311,50 @@
             cursor: pointer;
         }
 
+        .pagination-box {
+            margin-top: 30px;
+            background: #151d31;
+            border: 1px solid #293552;
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .page-info {
+            color: #c5cce0;
+            line-height: 1.6;
+        }
+
+        .page-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-block;
+            padding: 11px 15px;
+            border-radius: 10px;
+            background: #1d263b;
+            color: #d6defa;
+            text-decoration: none;
+            border: 1px solid #34405e;
+            font-weight: bold;
+        }
+
+        .page-btn:hover {
+            background: #26334f;
+        }
+
+        .page-btn.disabled {
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
         .rawg-note {
             margin-top: 35px;
             color: #8892b0;
@@ -354,6 +398,19 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+
+            .pagination-box {
+                align-items: stretch;
+            }
+
+            .page-buttons {
+                width: 100%;
+            }
+
+            .page-btn {
+                flex: 1;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -367,6 +424,7 @@
             <a href="{{ route('games.index') }}">Cari Game</a>
             <a href="{{ route('forum.index') }}">Forum</a>
             <a href="{{ route('dashboard') }}">Dashboard</a>
+            <a href="{{ route('profile.edit') }}">Profile</a>
         </div>
     </nav>
 
@@ -459,7 +517,8 @@
 
         <div class="result-info">
             @if ($search || $selectedStatus)
-                Menampilkan hasil wishlist
+                Menampilkan <strong>{{ $wishlists->total() }}</strong> hasil wishlist
+
                 @if ($search)
                     untuk pencarian <strong>{{ $search }}</strong>
                 @endif
@@ -469,11 +528,11 @@
                 @endif
                 .
             @else
-                Menampilkan semua game yang kamu simpan.
+                Menampilkan semua game yang kamu simpan. Total hasil: <strong>{{ $wishlists->total() }}</strong>.
             @endif
         </div>
 
-        @if ($wishlists->isEmpty())
+        @if ($wishlists->total() === 0)
             <div class="empty-box">
                 Tidak ada game yang cocok. Coba ubah pencarian/filter, atau buka halaman Cari Game
                 lalu tambahkan game baru ke wishlist.
@@ -546,6 +605,35 @@
                     </div>
                 @endforeach
             </div>
+
+            @if ($wishlists->hasPages())
+                <div class="pagination-box">
+                    <div class="page-info">
+                        Halaman {{ $wishlists->currentPage() }} dari {{ $wishlists->lastPage() }}
+                        <br>
+                        Menampilkan {{ $wishlists->firstItem() }} - {{ $wishlists->lastItem() }}
+                        dari {{ $wishlists->total() }} game
+                    </div>
+
+                    <div class="page-buttons">
+                        @if ($wishlists->onFirstPage())
+                            <span class="page-btn disabled">← Sebelumnya</span>
+                        @else
+                            <a href="{{ $wishlists->previousPageUrl() }}" class="page-btn">
+                                ← Sebelumnya
+                            </a>
+                        @endif
+
+                        @if ($wishlists->hasMorePages())
+                            <a href="{{ $wishlists->nextPageUrl() }}" class="page-btn">
+                                Berikutnya →
+                            </a>
+                        @else
+                            <span class="page-btn disabled">Berikutnya →</span>
+                        @endif
+                    </div>
+                </div>
+            @endif
         @endif
 
         <div class="rawg-note">
