@@ -50,6 +50,23 @@ class WishlistController extends Controller
         return back()->with('success', 'Game berhasil ditambahkan ke wishlist.');
     }
 
+    public function updateStatus(Request $request, Wishlist $wishlist)
+    {
+        if ($wishlist->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'status' => 'required|string|in:Ingin dimainkan,Sedang dimainkan,Selesai,Favorit',
+        ]);
+
+        $wishlist->update([
+            'status' => $request->status,
+        ]);
+
+        return back()->with('success', 'Status wishlist berhasil diperbarui.');
+    }
+
     public function destroy(Wishlist $wishlist)
     {
         if ($wishlist->user_id !== auth()->id()) {

@@ -34,7 +34,7 @@
         .navbar a {
             color: #d6defa;
             text-decoration: none;
-            margin-right: 18px;
+            margin-left: 18px;
         }
 
         .container {
@@ -48,6 +48,7 @@
         .subtitle {
             color: #c5cce0;
             line-height: 1.6;
+            max-width: 850px;
         }
 
         .alert-success {
@@ -68,62 +69,32 @@
             margin-bottom: 18px;
         }
 
-        .form-box {
-            margin-top: 30px;
-            background: #151d31;
-            border: 1px solid #293552;
-            border-radius: 18px;
-            padding: 24px;
-            overflow: hidden;
+        .top-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
-        }
-
-        .form-grid > div {
-            min-width: 0;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            color: #d6defa;
-            font-size: 14px;
-        }
-
-        input,
-        select {
-            width: 100%;
-            max-width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #34405e;
-            background: #0f1729;
-            color: white;
-            display: block;
-            font-size: 14px;
-        }
-
-        input::placeholder {
-            color: #7d869c;
-        }
-
-        .submit-btn {
-            margin-top: 18px;
+        .primary-link {
+            display: inline-block;
             padding: 12px 18px;
             border-radius: 10px;
-            border: none;
             background: #4169e1;
             color: white;
+            text-decoration: none;
             font-weight: bold;
-            cursor: pointer;
         }
 
-        .submit-btn:hover {
-            background: #3158c9;
+        .secondary-link {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 10px;
+            background: #1d263b;
+            color: #d6defa;
+            text-decoration: none;
+            border: 1px solid #34405e;
+            font-weight: bold;
         }
 
         .empty-box {
@@ -138,7 +109,7 @@
         .grid {
             margin-top: 30px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 22px;
         }
 
@@ -147,17 +118,19 @@
             border: 1px solid #293552;
             border-radius: 18px;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .card img {
             width: 100%;
-            height: 140px;
+            height: 155px;
             object-fit: cover;
             background: #0f1729;
         }
 
         .image-placeholder {
-            height: 140px;
+            height: 155px;
             background: #0f1729;
             display: flex;
             align-items: center;
@@ -167,11 +140,13 @@
 
         .card-body {
             padding: 16px;
+            flex: 1;
         }
 
         .game-title {
             font-weight: bold;
             margin-bottom: 8px;
+            font-size: 18px;
         }
 
         .game-info {
@@ -191,10 +166,63 @@
             font-size: 13px;
         }
 
-        .delete-btn {
+        .status-form {
             margin-top: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #d6defa;
+            font-size: 14px;
+        }
+
+        select {
+            width: 100%;
+            max-width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #34405e;
+            background: #0f1729;
+            color: white;
+            display: block;
+            font-size: 14px;
+        }
+
+        .update-btn {
+            margin-top: 10px;
             width: 100%;
             padding: 10px;
+            border-radius: 10px;
+            border: none;
+            background: #4169e1;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .card-actions {
+            padding: 0 16px 16px 16px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .detail-btn {
+            display: block;
+            width: 100%;
+            padding: 11px;
+            border-radius: 10px;
+            background: #1d263b;
+            color: #d6defa;
+            text-align: center;
+            text-decoration: none;
+            border: 1px solid #34405e;
+            font-weight: bold;
+        }
+
+        .delete-btn {
+            width: 100%;
+            padding: 11px;
             border-radius: 10px;
             border: none;
             background: #d9534f;
@@ -203,22 +231,17 @@
             cursor: pointer;
         }
 
-        .delete-btn:hover {
-            background: #c13f3b;
+        .rawg-note {
+            margin-top: 35px;
+            color: #8892b0;
+            font-size: 14px;
         }
 
-        .back-link {
-            display: inline-block;
-            margin-top: 25px;
+        .rawg-note a {
             color: #7aa2ff;
-            text-decoration: none;
         }
 
         @media (max-width: 700px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
             .navbar {
                 flex-direction: column;
                 gap: 12px;
@@ -244,6 +267,7 @@
         <div>
             <a href="{{ route('home') }}">Home</a>
             <a href="{{ route('games.index') }}">Cari Game</a>
+            <a href="{{ route('forum.index') }}">Forum</a>
             <a href="{{ route('dashboard') }}">Dashboard</a>
         </div>
     </nav>
@@ -252,8 +276,8 @@
         <h1>Wishlist Saya</h1>
 
         <p class="subtitle">
-            Simpan daftar game yang ingin dimainkan atau dibeli.
-            Untuk tahap ini, data game masih ditambahkan manual dulu sebelum terhubung ke RAWG API.
+            Daftar game yang kamu simpan dari halaman detail game. Kamu bisa mengubah status game,
+            membuka detailnya lagi, atau menghapusnya dari wishlist.
         </p>
 
         @if (session('success'))
@@ -272,61 +296,15 @@
             </div>
         @endif
 
-        <div class="form-box">
-            <h2>Tambah Game ke Wishlist</h2>
-
-            <form action="{{ route('wishlist.store') }}" method="POST">
-                @csrf
-
-                <div class="form-grid">
-                    <div>
-                        <label>ID Game RAWG / ID Sementara</label>
-                        <input type="number" name="rawg_game_id" placeholder="Contoh: 3498" required>
-                    </div>
-
-                    <div>
-                        <label>Nama Game</label>
-                        <input type="text" name="game_name" placeholder="Contoh: GTA V" required>
-                    </div>
-
-                    <div>
-                        <label>Slug Game</label>
-                        <input type="text" name="game_slug" placeholder="Contoh: grand-theft-auto-v">
-                    </div>
-
-                    <div>
-                        <label>URL Gambar</label>
-                        <input type="text" name="game_image" placeholder="Boleh dikosongkan dulu">
-                    </div>
-
-                    <div>
-                        <label>Rating</label>
-                        <input type="number" step="0.1" min="0" max="5" name="game_rating" placeholder="Contoh: 4.5">
-                    </div>
-
-                    <div>
-                        <label>Tanggal Rilis</label>
-                        <input type="date" name="game_released">
-                    </div>
-
-                    <div>
-                        <label>Status</label>
-                        <select name="status" required>
-                            <option value="Ingin dimainkan">Ingin dimainkan</option>
-                            <option value="Sedang dimainkan">Sedang dimainkan</option>
-                            <option value="Selesai">Selesai</option>
-                            <option value="Favorit">Favorit</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button type="submit" class="submit-btn">Tambah ke Wishlist</button>
-            </form>
+        <div class="top-actions">
+            <a href="{{ route('games.index') }}" class="primary-link">Cari Game Baru</a>
+            <a href="{{ route('dashboard') }}" class="secondary-link">Kembali ke Dashboard</a>
         </div>
 
         @if ($wishlists->isEmpty())
             <div class="empty-box">
-                Belum ada game di wishlist. Coba tambahkan satu game lewat form di atas.
+                Belum ada game di wishlist. Buka halaman Cari Game, pilih salah satu game,
+                lalu tekan tombol Tambah ke Wishlist.
             </div>
         @else
             <div class="grid">
@@ -340,16 +318,56 @@
 
                         <div class="card-body">
                             <div class="game-title">{{ $item->game_name }}</div>
-                            <div class="game-info">Rating: {{ $item->game_rating ?? '-' }}</div>
-                            <div class="game-info">Rilis: {{ $item->game_released ?? '-' }}</div>
+
+                            <div class="game-info">
+                                Rating: {{ $item->game_rating ?? '-' }}
+                            </div>
+
+                            <div class="game-info">
+                                Rilis: {{ $item->game_released ?? '-' }}
+                            </div>
+
                             <span class="status">{{ $item->status }}</span>
+
+                            <form action="{{ route('wishlist.updateStatus', $item->id) }}" method="POST" class="status-form">
+                                @csrf
+                                @method('PATCH')
+
+                                <label>Ubah Status</label>
+
+                                <select name="status">
+                                    <option value="Ingin dimainkan" {{ $item->status === 'Ingin dimainkan' ? 'selected' : '' }}>
+                                        Ingin dimainkan
+                                    </option>
+
+                                    <option value="Sedang dimainkan" {{ $item->status === 'Sedang dimainkan' ? 'selected' : '' }}>
+                                        Sedang dimainkan
+                                    </option>
+
+                                    <option value="Selesai" {{ $item->status === 'Selesai' ? 'selected' : '' }}>
+                                        Selesai
+                                    </option>
+
+                                    <option value="Favorit" {{ $item->status === 'Favorit' ? 'selected' : '' }}>
+                                        Favorit
+                                    </option>
+                                </select>
+
+                                <button type="submit" class="update-btn">Simpan Status</button>
+                            </form>
+                        </div>
+
+                        <div class="card-actions">
+                            <a href="{{ route('games.show', $item->rawg_game_id) }}" class="detail-btn">
+                                Lihat Detail
+                            </a>
 
                             <form action="{{ route('wishlist.destroy', $item->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
 
                                 <button type="submit" class="delete-btn" onclick="return confirm('Hapus game ini dari wishlist?')">
-                                    Hapus
+                                    Hapus dari Wishlist
                                 </button>
                             </form>
                         </div>
@@ -358,7 +376,9 @@
             </div>
         @endif
 
-        <a href="{{ route('dashboard') }}" class="back-link">Kembali ke Dashboard</a>
+        <div class="rawg-note">
+            Data game berasal dari <a href="https://rawg.io" target="_blank">RAWG</a>.
+        </div>
     </div>
 
 </body>

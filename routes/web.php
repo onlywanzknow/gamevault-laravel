@@ -38,6 +38,10 @@ Route::post('/wishlist', [WishlistController::class, 'store'])
     ->middleware('auth')
     ->name('wishlist.store');
 
+Route::patch('/wishlist/{wishlist}/status', [WishlistController::class, 'updateStatus'])
+    ->middleware('auth')
+    ->name('wishlist.updateStatus');
+
 Route::delete('/wishlist/{wishlist}', [WishlistController::class, 'destroy'])
     ->middleware('auth')
     ->name('wishlist.destroy');
