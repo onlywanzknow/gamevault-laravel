@@ -321,7 +321,10 @@
 
         .note-toggle-btn,
         .note-save-btn,
-        .note-cancel-btn {
+        .note-cancel-btn,
+        .status-toggle-btn,
+        .update-btn,
+        .status-cancel-btn {
             margin-top: 10px;
             padding: 9px 12px;
             border-radius: 10px;
@@ -330,26 +333,38 @@
             font-size: 13px;
         }
 
-        .note-toggle-btn {
+        .note-toggle-btn,
+        .status-toggle-btn {
             background: #1d263b;
             color: #d6defa;
             border: 1px solid #34405e;
         }
 
-        .note-save-btn {
+        .note-save-btn,
+        .update-btn {
             background: #4169e1;
             color: white;
             border: none;
         }
 
-        .note-cancel-btn {
+        .note-cancel-btn,
+        .status-cancel-btn {
             background: #1d263b;
             color: #d6defa;
             border: 1px solid #34405e;
         }
 
         .status-form {
-            margin-top: 14px;
+            display: none;
+            margin-top: 12px;
+            background: #101827;
+            border: 1px solid #34405e;
+            border-radius: 14px;
+            padding: 12px;
+        }
+
+        .status-form.active {
+            display: block;
         }
 
         .status-form label {
@@ -357,18 +372,14 @@
             margin-bottom: 6px;
             color: #d6defa;
             font-size: 14px;
+            font-weight: bold;
         }
 
-        .update-btn {
+        .status-actions {
             margin-top: 10px;
-            width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-            border: none;
-            background: #4169e1;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .card-actions {
@@ -720,7 +731,21 @@
                                 </div>
                             </form>
 
-                            <form action="{{ route('wishlist.updateStatus', $item->id) }}" method="POST" class="status-form">
+                            <button
+                                type="button"
+                                class="status-toggle-btn"
+                                id="status-button-{{ $item->id }}"
+                                onclick="showStatusForm({{ $item->id }})"
+                            >
+                                Ubah Status
+                            </button>
+
+                            <form
+                                action="{{ route('wishlist.updateStatus', $item->id) }}"
+                                method="POST"
+                                class="status-form"
+                                id="status-form-{{ $item->id }}"
+                            >
                                 @csrf
                                 @method('PATCH')
 
@@ -744,7 +769,17 @@
                                     </option>
                                 </select>
 
-                                <button type="submit" class="update-btn">Simpan Status</button>
+                                <div class="status-actions">
+                                    <button type="submit" class="update-btn">Simpan Status</button>
+
+                                    <button
+                                        type="button"
+                                        class="status-cancel-btn"
+                                        onclick="hideStatusForm({{ $item->id }})"
+                                    >
+                                        Batal
+                                    </button>
+                                </div>
                             </form>
                         </div>
 
@@ -818,6 +853,32 @@
         function hideNoteForm(itemId) {
             const form = document.getElementById('note-form-' + itemId);
             const button = document.getElementById('note-button-' + itemId);
+
+            if (form) {
+                form.classList.remove('active');
+            }
+
+            if (button) {
+                button.style.display = 'inline-block';
+            }
+        }
+
+        function showStatusForm(itemId) {
+            const form = document.getElementById('status-form-' + itemId);
+            const button = document.getElementById('status-button-' + itemId);
+
+            if (form) {
+                form.classList.add('active');
+            }
+
+            if (button) {
+                button.style.display = 'none';
+            }
+        }
+
+        function hideStatusForm(itemId) {
+            const form = document.getElementById('status-form-' + itemId);
+            const button = document.getElementById('status-button-' + itemId);
 
             if (form) {
                 form.classList.remove('active');
