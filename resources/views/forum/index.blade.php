@@ -121,7 +121,8 @@
         }
 
         input,
-        select {
+        select,
+        textarea {
             width: 100%;
             padding: 13px;
             border-radius: 10px;
@@ -129,9 +130,17 @@
             background: #0f1729;
             color: white;
             font-size: 15px;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
-        input::placeholder {
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
             color: #7d869c;
         }
 
@@ -203,6 +212,27 @@
             margin-top: 12px;
         }
 
+        .edit-form {
+            display: none;
+            margin-top: 16px;
+            background: #101827;
+            border: 1px solid #34405e;
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .edit-form.active {
+            display: block;
+        }
+
+        .edit-form label {
+            display: block;
+            color: #d6defa;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
         .comment-actions {
             display: flex;
             gap: 10px;
@@ -210,7 +240,10 @@
             margin-top: 16px;
         }
 
-        .detail-btn {
+        .detail-btn,
+        .edit-btn,
+        .save-btn,
+        .cancel-btn {
             display: inline-block;
             padding: 10px 14px;
             border-radius: 10px;
@@ -220,6 +253,22 @@
             border: 1px solid #34405e;
             font-weight: bold;
             font-size: 14px;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background: #24304d;
+        }
+
+        .save-btn {
+            background: #4169e1;
+            color: white;
+            border: none;
+        }
+
+        .cancel-btn {
+            background: #1d263b;
+            color: #d6defa;
         }
 
         .delete-btn {
@@ -452,11 +501,48 @@
                                     ID Game: {{ $comment->rawg_game_id }} <br>
                                     Oleh: {{ $comment->user->name ?? 'User' }} |
                                     {{ $comment->created_at->format('d M Y H:i') }}
+
+                                    @if ($comment->updated_at && $comment->updated_at->gt($comment->created_at))
+                                        <br>
+                                        Terakhir diedit: {{ $comment->updated_at->format('d M Y H:i') }}
+                                    @endif
                                 </div>
                             </div>
                         </div>
 
-                        <div class="comment-text">{{ $comment->comment }}</div>
+                        <div class="comment-text" id="comment-text-{{ $comment->id }}">
+                            {{ $comment->comment }}
+                        </div>
+
+                        @if ($comment->user_id === auth()->id())
+                            <form
+                                action="{{ route('forum.update', $comment->id) }}"
+                                method="POST"
+                                class="edit-form"
+                                id="edit-form-{{ $comment->id }}"
+                            >
+                                @csrf
+                                @method('PATCH')
+
+                                <label>Edit Komentar</label>
+
+                                <textarea name="comment" required minlength="3" maxlength="1000">{{ old('comment', $comment->comment) }}</textarea>
+
+                                <div class="comment-actions">
+                                    <button type="submit" class="save-btn">
+                                        Simpan Edit
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="cancel-btn"
+                                        onclick="hideEditForm({{ $comment->id }})"
+                                    >
+                                        Batal
+                                    </button>
+                                </div>
+                            </form>
+                        @endif
 
                         <div class="comment-actions">
                             <a href="{{ route('games.show', $comment->rawg_game_id) }}" class="detail-btn">
@@ -464,6 +550,15 @@
                             </a>
 
                             @if ($comment->user_id === auth()->id())
+                                <button
+                                    type="button"
+                                    class="edit-btn"
+                                    id="edit-button-{{ $comment->id }}"
+                                    onclick="showEditForm({{ $comment->id }})"
+                                >
+                                    Edit Komentar
+                                </button>
+
                                 <form action="{{ route('forum.destroy', $comment->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
@@ -508,6 +603,34 @@
             @endif
         @endif
     </div>
+
+    <script>
+        function showEditForm(commentId) {
+            const form = document.getElementById('edit-form-' + commentId);
+            const button = document.getElementById('edit-button-' + commentId);
+
+            if (form) {
+                form.classList.add('active');
+            }
+
+            if (button) {
+                button.style.display = 'none';
+            }
+        }
+
+        function hideEditForm(commentId) {
+            const form = document.getElementById('edit-form-' + commentId);
+            const button = document.getElementById('edit-button-' + commentId);
+
+            if (form) {
+                form.classList.remove('active');
+            }
+
+            if (button) {
+                button.style.display = 'inline-block';
+            }
+        }
+    </script>
 
 </body>
 </html>

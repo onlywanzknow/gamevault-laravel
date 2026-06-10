@@ -96,6 +96,23 @@ class ForumController extends Controller
         return back()->with('success', 'Komentar berhasil dikirim.');
     }
 
+    public function update(Request $request, GameComment $comment)
+    {
+        if ($comment->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'comment' => 'required|string|min:3|max:1000',
+        ]);
+
+        $comment->update([
+            'comment' => $request->comment,
+        ]);
+
+        return back()->with('success', 'Komentar berhasil diperbarui.');
+    }
+
     public function destroy(GameComment $comment)
     {
         if ($comment->user_id !== auth()->id()) {

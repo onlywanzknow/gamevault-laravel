@@ -69,6 +69,10 @@ Route::post('/forum', [ForumController::class, 'store'])
     ->middleware('auth')
     ->name('forum.store');
 
+Route::patch('/forum/{comment}', [ForumController::class, 'update'])
+    ->middleware('auth')
+    ->name('forum.update');
+
 Route::delete('/forum/{comment}', [ForumController::class, 'destroy'])
     ->middleware('auth')
     ->name('forum.destroy');
