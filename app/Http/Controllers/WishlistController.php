@@ -9,8 +9,9 @@ class WishlistController extends Controller
 {
     public function index(Request $request)
     {
-        $search = trim($request->get('search', ''));
-        $selectedStatus = $request->get('status', '');
+        $search = trim((string) ($request->query('search') ?? ''));
+        $selectedStatus = (string) ($request->query('status') ?? '');
+        $selectedSort = (string) ($request->query('sort') ?? 'latest');
 
         $statusOptions = [
             '' => 'Semua Status',
@@ -20,8 +21,20 @@ class WishlistController extends Controller
             'Favorit' => 'Favorit',
         ];
 
+        $sortOptions = [
+            'latest' => 'Terbaru Ditambahkan',
+            'oldest' => 'Terlama Ditambahkan',
+            'name_asc' => 'Nama A-Z',
+            'rating_desc' => 'Rating Tertinggi',
+            'released_desc' => 'Rilis Terbaru',
+        ];
+
         if (!array_key_exists($selectedStatus, $statusOptions)) {
             $selectedStatus = '';
+        }
+
+        if (!array_key_exists($selectedSort, $sortOptions)) {
+            $selectedSort = 'latest';
         }
 
         $baseQuery = Wishlist::where('user_id', auth()->id());
@@ -34,14 +47,41 @@ class WishlistController extends Controller
             'favorit' => (clone $baseQuery)->where('status', 'Favorit')->count(),
         ];
 
-        $wishlists = Wishlist::where('user_id', auth()->id())
-            ->when($search !== '', function ($query) use ($search) {
-                $query->where('game_name', 'like', '%' . $search . '%');
-            })
-            ->when($selectedStatus !== '', function ($query) use ($selectedStatus) {
-                $query->where('status', $selectedStatus);
-            })
-            ->latest()
+        $wishlistsQuery = Wishlist::where('user_id', auth()->id());
+
+        if ($search !== '') {
+            $wishlistsQuery->where('game_name', 'like', '%' . $search . '%');
+        }
+
+        if ($selectedStatus !== '') {
+            $wishlistsQuery->where('status', $selectedStatus);
+        }
+
+        if ($selectedSort === 'oldest') {
+            $wishlistsQuery
+                ->orderBy('created_at', 'asc')
+                ->orderBy('id', 'asc');
+        } elseif ($selectedSort === 'name_asc') {
+            $wishlistsQuery
+                ->orderByRaw('LOWER(game_name) ASC')
+                ->orderBy('created_at', 'desc');
+        } elseif ($selectedSort === 'rating_desc') {
+            $wishlistsQuery
+                ->orderByRaw('game_rating IS NULL ASC')
+                ->orderByRaw('CAST(game_rating AS REAL) DESC')
+                ->orderBy('created_at', 'desc');
+        } elseif ($selectedSort === 'released_desc') {
+            $wishlistsQuery
+                ->orderByRaw('game_released IS NULL ASC')
+                ->orderBy('game_released', 'desc')
+                ->orderBy('created_at', 'desc');
+        } else {
+            $wishlistsQuery
+                ->orderBy('created_at', 'desc')
+                ->orderBy('id', 'desc');
+        }
+
+        $wishlists = $wishlistsQuery
             ->paginate(8)
             ->withQueryString();
 
@@ -49,7 +89,9 @@ class WishlistController extends Controller
             'wishlists',
             'search',
             'selectedStatus',
+            'selectedSort',
             'statusOptions',
+            'sortOptions',
             'statusCounts'
         ));
     }

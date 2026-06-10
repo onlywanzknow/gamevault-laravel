@@ -134,7 +134,7 @@
 
         .filter-form {
             display: grid;
-            grid-template-columns: 1.4fr 1fr auto;
+            grid-template-columns: 1.4fr 1fr 1fr auto;
             gap: 12px;
             align-items: end;
         }
@@ -365,17 +365,19 @@
             color: #7aa2ff;
         }
 
-        @media (max-width: 1000px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
+        @media (max-width: 1100px) {
             .filter-form {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
             }
 
             .filter-btn {
                 width: 100%;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -396,6 +398,10 @@
             }
 
             .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-form {
                 grid-template-columns: 1fr;
             }
 
@@ -433,7 +439,8 @@
 
         <p class="subtitle">
             Daftar game yang kamu simpan dari halaman detail game. Kamu bisa mencari game,
-            memfilter berdasarkan status, mengubah status, membuka detail, atau menghapus game dari wishlist.
+            memfilter berdasarkan status, mengurutkan daftar, mengubah status, membuka detail,
+            atau menghapus game dari wishlist.
         </p>
 
         @if (session('success'))
@@ -507,16 +514,27 @@
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <label>Urutkan</label>
+                    <select name="sort">
+                        @foreach ($sortOptions as $value => $label)
+                            <option value="{{ $value }}" {{ $selectedSort === $value ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <button type="submit" class="filter-btn">Terapkan</button>
             </form>
 
-            @if ($search || $selectedStatus)
+            @if ($search || $selectedStatus || $selectedSort !== 'latest')
                 <a href="{{ route('wishlist.index') }}" class="reset-link">Reset filter wishlist</a>
             @endif
         </div>
 
         <div class="result-info">
-            @if ($search || $selectedStatus)
+            @if ($search || $selectedStatus || $selectedSort !== 'latest')
                 Menampilkan <strong>{{ $wishlists->total() }}</strong> hasil wishlist
 
                 @if ($search)
@@ -526,7 +544,8 @@
                 @if ($selectedStatus)
                     dengan status <strong>{{ $selectedStatus }}</strong>
                 @endif
-                .
+
+                dengan urutan <strong>{{ $sortOptions[$selectedSort] ?? 'Terbaru' }}</strong>.
             @else
                 Menampilkan semua game yang kamu simpan. Total hasil: <strong>{{ $wishlists->total() }}</strong>.
             @endif
