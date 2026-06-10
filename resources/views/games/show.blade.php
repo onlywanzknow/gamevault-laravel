@@ -267,6 +267,62 @@
             color: #c5cce0;
         }
 
+        .recommend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 18px;
+        }
+
+        .recommend-card {
+            background: #0f1729;
+            border: 1px solid #293552;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .recommend-card img {
+            width: 100%;
+            height: 125px;
+            object-fit: cover;
+            background: #101624;
+        }
+
+        .recommend-body {
+            padding: 14px;
+            flex: 1;
+        }
+
+        .recommend-title {
+            font-weight: bold;
+            margin-bottom: 7px;
+            line-height: 1.4;
+        }
+
+        .recommend-meta {
+            color: #aeb8d4;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .recommend-footer {
+            padding: 0 14px 14px 14px;
+        }
+
+        .recommend-btn {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            background: #1d263b;
+            border: 1px solid #34405e;
+            color: #d6defa;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
         .comment-form {
             margin-top: 18px;
             background: #0f1729;
@@ -418,6 +474,7 @@
                 <a href="{{ route('wishlist.index') }}">Wishlist</a>
                 <a href="{{ route('forum.index') }}">Forum</a>
                 <a href="{{ route('dashboard') }}">Dashboard</a>
+                <a href="{{ route('profile.edit') }}">Profile</a>
             @else
                 <a href="{{ route('login') }}">Login</a>
                 <a href="{{ route('register') }}">Register</a>
@@ -608,6 +665,49 @@
                                     <strong>Recommended:</strong>
                                     <div class="requirement-text">{{ $requirement['recommended'] }}</div>
                                 @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+            <div class="section">
+                <h2>Game Serupa</h2>
+
+                <p class="description" style="margin-top: 0;">
+                    Rekomendasi ini diambil berdasarkan genre utama dari game yang sedang dibuka.
+                </p>
+
+                @if (count($recommendedGames) === 0)
+                    <div class="empty-box">
+                        Belum ada rekomendasi game serupa yang bisa ditampilkan.
+                    </div>
+                @else
+                    <div class="recommend-grid">
+                        @foreach ($recommendedGames as $recommendedGame)
+                            <div class="recommend-card">
+                                @if (!empty($recommendedGame['background_image']))
+                                    <img src="{{ $recommendedGame['background_image'] }}" alt="{{ $recommendedGame['name'] ?? 'Game' }}">
+                                @else
+                                    <div class="image-placeholder" style="height: 125px;">No Image</div>
+                                @endif
+
+                                <div class="recommend-body">
+                                    <div class="recommend-title">
+                                        {{ $recommendedGame['name'] ?? 'Unknown Game' }}
+                                    </div>
+
+                                    <div class="recommend-meta">
+                                        Rating: {{ $recommendedGame['rating'] ?? '-' }} <br>
+                                        Rilis: {{ $recommendedGame['released'] ?? '-' }}
+                                    </div>
+                                </div>
+
+                                <div class="recommend-footer">
+                                    <a href="{{ route('games.show', $recommendedGame['id']) }}" class="recommend-btn">
+                                        Lihat Detail
+                                    </a>
+                                </div>
                             </div>
                         @endforeach
                     </div>

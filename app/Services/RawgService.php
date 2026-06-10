@@ -82,6 +82,38 @@ class RawgService
         }
     }
 
+    public function getRecommendedGamesByGenre(?string $genreSlug, int|string|null $currentGameId = null): array
+    {
+        if (!$this->hasApiKey() || !$genreSlug) {
+            return [];
+        }
+
+        try {
+            $response = Http::acceptJson()
+                ->timeout(15)
+                ->get($this->baseUrl . '/games', [
+                    'key' => env('RAWG_API_KEY'),
+                    'genres' => $genreSlug,
+                    'ordering' => '-rating',
+                    'page_size' => 8,
+                ]);
+
+            if (!$response->successful()) {
+                return [];
+            }
+
+            return collect($response->json('results') ?? [])
+                ->filter(function ($game) use ($currentGameId) {
+                    return (string) ($game['id'] ?? '') !== (string) $currentGameId;
+                })
+                ->take(6)
+                ->values()
+                ->toArray();
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
     public function getGameDetail(int|string $id): array
     {
         if (!$this->hasApiKey()) {

@@ -100,6 +100,7 @@ class GameController extends Controller
         $screenshots = [];
         $comments = collect();
         $isWishlisted = false;
+        $recommendedGames = [];
 
         if ($game) {
             $screenshots = $rawgService->getGameScreenshots($id);
@@ -114,6 +115,13 @@ class GameController extends Controller
                     ->where('rawg_game_id', $game['id'])
                     ->exists();
             }
+
+            $mainGenreSlug = $game['genres'][0]['slug'] ?? null;
+
+            $recommendedGames = $rawgService->getRecommendedGamesByGenre(
+                $mainGenreSlug,
+                $game['id']
+            );
         }
 
         return view('games.show', compact(
@@ -121,6 +129,7 @@ class GameController extends Controller
             'screenshots',
             'comments',
             'isWishlisted',
+            'recommendedGames',
             'error'
         ));
     }
