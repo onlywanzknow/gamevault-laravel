@@ -61,12 +61,22 @@
         }
 
         .search-form {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr auto;
             gap: 12px;
+            align-items: end;
         }
 
-        input {
-            flex: 1;
+        .form-group label {
+            display: block;
+            color: #d6defa;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select {
+            width: 100%;
             padding: 14px;
             border-radius: 10px;
             border: 1px solid #34405e;
@@ -87,10 +97,19 @@
             color: white;
             font-weight: bold;
             cursor: pointer;
+            white-space: nowrap;
         }
 
         button:hover {
             background: #3158c9;
+        }
+
+        .reset-link {
+            display: inline-block;
+            margin-top: 14px;
+            color: #7aa2ff;
+            text-decoration: none;
+            font-size: 14px;
         }
 
         .alert-error {
@@ -105,6 +124,13 @@
         .result-info {
             margin-top: 30px;
             color: #c5cce0;
+            line-height: 1.7;
+        }
+
+        .filter-summary {
+            margin-top: 10px;
+            color: #aeb8d4;
+            font-size: 14px;
         }
 
         .games-grid {
@@ -213,6 +239,16 @@
             color: #7aa2ff;
         }
 
+        @media (max-width: 1050px) {
+            .search-form {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .search-form button {
+                width: 100%;
+            }
+        }
+
         @media (max-width: 700px) {
             .navbar {
                 flex-direction: column;
@@ -230,7 +266,7 @@
             }
 
             .search-form {
-                flex-direction: column;
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -259,21 +295,59 @@
         <h1>Cari Game</h1>
 
         <p class="subtitle">
-            Cari informasi game dari RAWG API. Data yang ditampilkan meliputi nama game,
-            rating, genre, platform, tanggal rilis, dan gambar cover.
+            Cari informasi game dari RAWG API. Kamu bisa mencari berdasarkan nama,
+            memilih genre, memilih platform, dan mengatur urutan hasil game.
         </p>
 
         <div class="search-box">
             <form action="{{ route('games.index') }}" method="GET" class="search-form">
-                <input
-                    type="text"
-                    name="search"
-                    value="{{ $search }}"
-                    placeholder="Contoh: Minecraft, GTA V, Valorant, Elden Ring"
-                >
+                <div class="form-group">
+                    <label>Nama Game</label>
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ $search }}"
+                        placeholder="Contoh: Minecraft, GTA V, Valorant"
+                    >
+                </div>
 
-                <button type="submit">Cari</button>
+                <div class="form-group">
+                    <label>Genre</label>
+                    <select name="genre">
+                        @foreach ($genres as $value => $label)
+                            <option value="{{ $value }}" {{ $selectedGenre === $value ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Platform</label>
+                    <select name="platform">
+                        @foreach ($platforms as $value => $label)
+                            <option value="{{ $value }}" {{ $selectedPlatform === $value ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Urutkan</label>
+                    <select name="ordering">
+                        @foreach ($orderings as $value => $label)
+                            <option value="{{ $value }}" {{ $selectedOrdering === $value ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <button type="submit">Terapkan</button>
             </form>
+
+            <a href="{{ route('games.index') }}" class="reset-link">Reset pencarian dan filter</a>
         </div>
 
         @if ($error)
@@ -287,14 +361,20 @@
                 @if ($search)
                     Hasil pencarian untuk: <strong>{{ $search }}</strong>
                 @else
-                    Menampilkan beberapa game dengan rating tinggi.
+                    Menampilkan daftar game dari RAWG API.
                 @endif
+
+                <div class="filter-summary">
+                    Genre: {{ $genres[$selectedGenre] ?? 'Semua Genre' }} |
+                    Platform: {{ $platforms[$selectedPlatform] ?? 'Semua Platform' }} |
+                    Urutan: {{ $orderings[$selectedOrdering] ?? 'Rating Tertinggi' }}
+                </div>
             </div>
         @endif
 
         @if (!$error && count($games) === 0)
             <div class="empty-box">
-                Tidak ada game yang ditemukan.
+                Tidak ada game yang ditemukan. Coba ubah kata kunci atau filter.
             </div>
         @endif
 
@@ -302,8 +382,8 @@
             <div class="games-grid">
                 @foreach ($games as $game)
                     @php
-                        $genres = collect($game['genres'] ?? [])->pluck('name')->take(3)->join(', ');
-                        $platforms = collect($game['platforms'] ?? [])->pluck('platform.name')->take(3)->join(', ');
+                        $gameGenres = collect($game['genres'] ?? [])->pluck('name')->take(3)->join(', ');
+                        $gamePlatforms = collect($game['platforms'] ?? [])->pluck('platform.name')->take(3)->join(', ');
                     @endphp
 
                     <div class="game-card">
@@ -325,12 +405,12 @@
                             </div>
 
                             <div class="game-info">
-                                Platform: {{ $platforms ?: '-' }}
+                                Platform: {{ $gamePlatforms ?: '-' }}
                             </div>
 
                             <div class="badge-row">
-                                @if ($genres)
-                                    @foreach (explode(', ', $genres) as $genre)
+                                @if ($gameGenres)
+                                    @foreach (explode(', ', $gameGenres) as $genre)
                                         <span class="badge">{{ $genre }}</span>
                                     @endforeach
                                 @else

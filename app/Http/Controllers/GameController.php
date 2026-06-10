@@ -10,14 +10,75 @@ class GameController extends Controller
 {
     public function index(Request $request, RawgService $rawgService)
     {
-        $search = trim($request->get('search', ''));
+        $genres = [
+            '' => 'Semua Genre',
+            'action' => 'Action',
+            'adventure' => 'Adventure',
+            'role-playing-games-rpg' => 'RPG',
+            'shooter' => 'Shooter',
+            'strategy' => 'Strategy',
+            'sports' => 'Sports',
+            'racing' => 'Racing',
+            'simulation' => 'Simulation',
+            'indie' => 'Indie',
+            'puzzle' => 'Puzzle',
+        ];
 
-        $data = $rawgService->getGames($search !== '' ? $search : null);
+        $platforms = [
+            '' => 'Semua Platform',
+            '1' => 'PC',
+            '2' => 'PlayStation',
+            '3' => 'Xbox',
+            '7' => 'Nintendo',
+            '4' => 'iOS',
+            '8' => 'Android',
+        ];
+
+        $orderings = [
+            '-rating' => 'Rating Tertinggi',
+            '-released' => 'Rilis Terbaru',
+            'name' => 'Nama A-Z',
+            '-metacritic' => 'Metacritic Tertinggi',
+        ];
+
+        $search = trim($request->get('search', ''));
+        $selectedGenre = $request->get('genre', '');
+        $selectedPlatform = $request->get('platform', '');
+        $selectedOrdering = $request->get('ordering', '-rating');
+
+        if (!array_key_exists($selectedGenre, $genres)) {
+            $selectedGenre = '';
+        }
+
+        if (!array_key_exists($selectedPlatform, $platforms)) {
+            $selectedPlatform = '';
+        }
+
+        if (!array_key_exists($selectedOrdering, $orderings)) {
+            $selectedOrdering = '-rating';
+        }
+
+        $data = $rawgService->getGames(
+            $search !== '' ? $search : null,
+            $selectedGenre !== '' ? $selectedGenre : null,
+            $selectedPlatform !== '' ? $selectedPlatform : null,
+            $selectedOrdering
+        );
 
         $games = $data['results'];
         $error = $data['error'];
 
-        return view('games.index', compact('games', 'search', 'error'));
+        return view('games.index', compact(
+            'games',
+            'search',
+            'error',
+            'genres',
+            'platforms',
+            'orderings',
+            'selectedGenre',
+            'selectedPlatform',
+            'selectedOrdering'
+        ));
     }
 
     public function show(int|string $id, RawgService $rawgService)

@@ -13,8 +13,12 @@ class RawgService
         return !empty(env('RAWG_API_KEY'));
     }
 
-    public function getGames(?string $search = null): array
-    {
+    public function getGames(
+        ?string $search = null,
+        ?string $genre = null,
+        ?string $parentPlatform = null,
+        string $ordering = '-rating'
+    ): array {
         if (!$this->hasApiKey()) {
             return [
                 'results' => [],
@@ -25,11 +29,19 @@ class RawgService
         $params = [
             'key' => env('RAWG_API_KEY'),
             'page_size' => 12,
-            'ordering' => '-rating',
+            'ordering' => $ordering,
         ];
 
         if ($search) {
             $params['search'] = $search;
+        }
+
+        if ($genre) {
+            $params['genres'] = $genre;
+        }
+
+        if ($parentPlatform) {
+            $params['parent_platforms'] = $parentPlatform;
         }
 
         try {
