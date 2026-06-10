@@ -10,7 +10,13 @@ class ForumController extends Controller
     public function index(Request $request)
     {
         $search = trim((string) ($request->query('search') ?? ''));
+        $selectedScope = (string) ($request->query('scope') ?? 'all');
         $selectedSort = (string) ($request->query('sort') ?? 'latest');
+
+        $scopeOptions = [
+            'all' => 'Semua Komentar',
+            'mine' => 'Komentar Saya',
+        ];
 
         $sortOptions = [
             'latest' => 'Komentar Terbaru',
@@ -19,11 +25,19 @@ class ForumController extends Controller
             'game_desc' => 'Nama Game Z-A',
         ];
 
+        if (!array_key_exists($selectedScope, $scopeOptions)) {
+            $selectedScope = 'all';
+        }
+
         if (!array_key_exists($selectedSort, $sortOptions)) {
             $selectedSort = 'latest';
         }
 
         $commentsQuery = GameComment::with('user');
+
+        if ($selectedScope === 'mine') {
+            $commentsQuery->where('user_id', auth()->id());
+        }
 
         if ($search !== '') {
             $commentsQuery->where(function ($query) use ($search) {
@@ -57,7 +71,9 @@ class ForumController extends Controller
         return view('forum.index', compact(
             'comments',
             'search',
+            'selectedScope',
             'selectedSort',
+            'scopeOptions',
             'sortOptions'
         ));
     }

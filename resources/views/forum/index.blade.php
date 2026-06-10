@@ -108,7 +108,7 @@
 
         .search-form {
             display: grid;
-            grid-template-columns: 1.5fr 1fr auto;
+            grid-template-columns: 1.5fr 1fr 1fr auto;
             gap: 12px;
             align-items: end;
         }
@@ -287,9 +287,9 @@
             pointer-events: none;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1050px) {
             .search-form {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
             }
 
             .search-btn {
@@ -311,6 +311,10 @@
 
             .container {
                 padding: 35px 6%;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
             }
 
             .comment-header {
@@ -384,6 +388,17 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Tampilkan</label>
+                    <select name="scope">
+                        @foreach ($scopeOptions as $value => $label)
+                            <option value="{{ $value }}" {{ $selectedScope === $value ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label>Urutkan</label>
                     <select name="sort">
                         @foreach ($sortOptions as $value => $label)
@@ -397,14 +412,18 @@
                 <button type="submit" class="search-btn">Terapkan</button>
             </form>
 
-            @if ($search || $selectedSort !== 'latest')
+            @if ($search || $selectedScope !== 'all' || $selectedSort !== 'latest')
                 <a href="{{ route('forum.index') }}" class="reset-link">Reset forum</a>
             @endif
         </div>
 
         <div class="summary-box">
-            @if ($search || $selectedSort !== 'latest')
+            @if ($search || $selectedScope !== 'all' || $selectedSort !== 'latest')
                 Menampilkan <strong>{{ $comments->total() }}</strong> hasil forum
+
+                @if ($selectedScope !== 'all')
+                    dari <strong>{{ $scopeOptions[$selectedScope] ?? 'Komentar Saya' }}</strong>
+                @endif
 
                 @if ($search)
                     untuk pencarian <strong>{{ $search }}</strong>
