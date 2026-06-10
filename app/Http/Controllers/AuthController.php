@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GameComment;
 use App\Models\User;
 use App\Models\Wishlist;
-use App\Models\GameComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,20 +19,20 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|min:3|max:100',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
+            'name' => 'required|string|min:3|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
         ]);
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => strtolower($request->email),
             'password' => Hash::make($request->password),
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', 'Akun berhasil dibuat.');
+        return redirect()->route('dashboard')->with('success', 'Akun berhasil dibuat. Selamat datang di GameVault!');
     }
 
     public function showLogin()
@@ -43,47 +43,74 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+            'email' => 'required|string|email',
+            'password' => 'required|string',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        $remember = $request->has('remember');
+
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            return redirect()->route('dashboard')->with('success', 'Berhasil login.');
+            return redirect()->route('dashboard')->with('success', 'Login berhasil. Selamat datang kembali!');
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+        return back()
+            ->withErrors([
+                'email' => 'Email atau password salah.',
+            ])
+            ->onlyInput('email');
     }
 
     public function dashboard()
     {
-        $userId = auth()->id();
+        $user = auth()->user();
 
-        $wishlistCount = Wishlist::where('user_id', $userId)->count();
+        $wishlistCount = Wishlist::where('user_id', $user->id)->count();
 
-        $commentCount = GameComment::where('user_id', $userId)->count();
+        $commentCount = GameComment::where('user_id', $user->id)->count();
 
-        $favoriteCount = Wishlist::where('user_id', $userId)
+        $favoriteCount = Wishlist::where('user_id', $user->id)
             ->where('status', 'Favorit')
             ->count();
 
-        $recentWishlists = Wishlist::where('user_id', $userId)
+        $completedCount = Wishlist::where('user_id', $user->id)
+            ->where('status', 'Selesai')
+            ->count();
+
+        $playingCount = Wishlist::where('user_id', $user->id)
+            ->where('status', 'Sedang dimainkan')
+            ->count();
+
+        $wantToPlayCount = Wishlist::where('user_id', $user->id)
+            ->where('status', 'Ingin dimainkan')
+            ->count();
+
+        $progressPercent = 0;
+
+        if ($wishlistCount > 0) {
+            $progressPercent = round(($completedCount / $wishlistCount) * 100);
+        }
+
+        $recentWishlists = Wishlist::where('user_id', $user->id)
             ->latest()
-            ->take(5)
+            ->take(4)
             ->get();
 
-        $recentComments = GameComment::where('user_id', $userId)
+        $recentComments = GameComment::where('user_id', $user->id)
             ->latest()
-            ->take(5)
+            ->take(4)
             ->get();
 
         return view('dashboard', compact(
+            'user',
             'wishlistCount',
             'commentCount',
             'favoriteCount',
+            'completedCount',
+            'playingCount',
+            'wantToPlayCount',
+            'progressPercent',
             'recentWishlists',
             'recentComments'
         ));
@@ -94,8 +121,9 @@ class AuthController extends Controller
         Auth::logout();
 
         $request->session()->invalidate();
+
         $request->session()->regenerateToken();
 
-        return redirect()->route('home')->with('success', 'Berhasil logout.');
+        return redirect()->route('home')->with('success', 'Logout berhasil.');
     }
 }
