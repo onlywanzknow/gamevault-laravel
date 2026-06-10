@@ -13,11 +13,19 @@ class AuthController extends Controller
 {
     public function showRegister()
     {
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+
         return view('auth.register');
     }
 
     public function register(Request $request)
     {
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+
         $request->validate([
             'name' => 'required|string|min:3|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
@@ -37,11 +45,19 @@ class AuthController extends Controller
 
     public function showLogin()
     {
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+
         return view('auth.login');
     }
 
     public function login(Request $request)
     {
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+
         $credentials = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
