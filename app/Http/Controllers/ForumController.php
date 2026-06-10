@@ -19,7 +19,8 @@ class ForumController extends Controller
                 });
             })
             ->latest()
-            ->get();
+            ->paginate(8)
+            ->withQueryString();
 
         return view('forum.index', compact('comments', 'search'));
     }

@@ -233,6 +233,50 @@
             line-height: 1.6;
         }
 
+        .pagination-box {
+            margin-top: 28px;
+            background: #151d31;
+            border: 1px solid #293552;
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .page-info {
+            color: #c5cce0;
+            line-height: 1.6;
+        }
+
+        .page-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-block;
+            padding: 11px 15px;
+            border-radius: 10px;
+            background: #1d263b;
+            color: #d6defa;
+            text-decoration: none;
+            border: 1px solid #34405e;
+            font-weight: bold;
+        }
+
+        .page-btn:hover {
+            background: #26334f;
+        }
+
+        .page-btn.disabled {
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
         @media (max-width: 800px) {
             .navbar {
                 flex-direction: column;
@@ -256,6 +300,19 @@
             .comment-header {
                 flex-direction: column;
             }
+
+            .pagination-box {
+                align-items: stretch;
+            }
+
+            .page-buttons {
+                width: 100%;
+            }
+
+            .page-btn {
+                flex: 1;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -269,6 +326,7 @@
             <a href="{{ route('games.index') }}">Cari Game</a>
             <a href="{{ route('wishlist.index') }}">Wishlist</a>
             <a href="{{ route('dashboard') }}">Dashboard</a>
+            <a href="{{ route('profile.edit') }}">Profile</a>
         </div>
     </nav>
 
@@ -316,13 +374,14 @@
 
         <div class="summary-box">
             @if ($search)
-                Menampilkan hasil forum untuk pencarian: <strong>{{ $search }}</strong>.
+                Menampilkan <strong>{{ $comments->total() }}</strong> hasil forum untuk pencarian:
+                <strong>{{ $search }}</strong>.
             @else
-                Total komentar forum saat ini: <strong>{{ $comments->count() }}</strong>.
+                Total komentar forum saat ini: <strong>{{ $comments->total() }}</strong>.
             @endif
         </div>
 
-        @if ($comments->isEmpty())
+        @if ($comments->total() === 0)
             <div class="empty-box">
                 Belum ada komentar yang cocok. Buka halaman Cari Game, pilih salah satu game,
                 lalu tulis komentar dari halaman detail game.
@@ -364,6 +423,35 @@
                     </div>
                 @endforeach
             </div>
+
+            @if ($comments->hasPages())
+                <div class="pagination-box">
+                    <div class="page-info">
+                        Halaman {{ $comments->currentPage() }} dari {{ $comments->lastPage() }}
+                        <br>
+                        Menampilkan {{ $comments->firstItem() }} - {{ $comments->lastItem() }}
+                        dari {{ $comments->total() }} komentar
+                    </div>
+
+                    <div class="page-buttons">
+                        @if ($comments->onFirstPage())
+                            <span class="page-btn disabled">← Sebelumnya</span>
+                        @else
+                            <a href="{{ $comments->previousPageUrl() }}" class="page-btn">
+                                ← Sebelumnya
+                            </a>
+                        @endif
+
+                        @if ($comments->hasMorePages())
+                            <a href="{{ $comments->nextPageUrl() }}" class="page-btn">
+                                Berikutnya →
+                            </a>
+                        @else
+                            <span class="page-btn disabled">Berikutnya →</span>
+                        @endif
+                    </div>
+                </div>
+            @endif
         @endif
     </div>
 
