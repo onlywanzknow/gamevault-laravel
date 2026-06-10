@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>GameVault - Katalog Game Favorit</title>
+    <title>GameVault - Katalog Game dan Wishlist</title>
 
     <style>
         * {
@@ -17,179 +17,200 @@
         }
 
         .navbar {
-            width: 100%;
             padding: 20px 8%;
+            background: #0b1020;
+            border-bottom: 1px solid #1f2a44;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #0b1020;
-            border-bottom: 1px solid #1f2a44;
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: bold;
             color: #7aa2ff;
+            font-weight: bold;
+            font-size: 24px;
         }
 
-        .nav-links a {
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .navbar a {
             color: #d6defa;
             text-decoration: none;
-            margin-left: 18px;
-            font-size: 15px;
         }
 
-        .nav-links a:hover {
-            color: #7aa2ff;
+        .navbar a:hover {
+            color: white;
         }
 
         .logout-form {
-            display: inline;
+            margin: 0;
         }
 
         .logout-btn {
-            margin-left: 18px;
-            padding: 9px 14px;
-            border-radius: 10px;
-            border: none;
-            background: #d9534f;
-            color: white;
-            cursor: pointer;
+            padding: 9px 13px;
+            border-radius: 9px;
+            border: 1px solid #914646;
+            background: #3a1d1d;
+            color: #ffdada;
             font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #552626;
+        }
+
+        .container {
+            padding: 55px 8%;
         }
 
         .hero {
-            min-height: 75vh;
-            padding: 70px 8%;
             display: grid;
-            grid-template-columns: 1.15fr 0.85fr;
-            gap: 40px;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 30px;
             align-items: center;
+            background:
+                linear-gradient(135deg, rgba(65, 105, 225, 0.22), rgba(21, 29, 49, 0.96)),
+                #151d31;
+            border: 1px solid #293552;
+            border-radius: 28px;
+            padding: 38px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 13px;
+            border-radius: 999px;
+            background: #1d263b;
+            border: 1px solid #34405e;
+            color: #d6defa;
+            font-size: 14px;
+            margin-bottom: 16px;
         }
 
         .hero h1 {
-            font-size: 52px;
-            margin-top: 0;
-            margin-bottom: 18px;
-            line-height: 1.1;
+            margin: 0;
+            font-size: 48px;
+            line-height: 1.15;
+        }
+
+        .hero h1 span {
+            color: #7aa2ff;
         }
 
         .hero p {
+            margin-top: 18px;
             color: #c5cce0;
-            font-size: 18px;
-            line-height: 1.7;
-            max-width: 660px;
+            line-height: 1.8;
+            font-size: 16px;
         }
 
-        .button-group {
-            margin-top: 32px;
+        .hero-actions {
+            margin-top: 26px;
             display: flex;
-            flex-wrap: wrap;
             gap: 12px;
+            flex-wrap: wrap;
         }
 
-        .btn {
+        .primary-btn,
+        .secondary-btn {
             display: inline-block;
-            padding: 14px 22px;
-            border-radius: 10px;
+            padding: 13px 19px;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 15px;
         }
 
-        .btn-primary {
+        .primary-btn {
             background: #4169e1;
             color: white;
         }
 
-        .btn-primary:hover {
+        .primary-btn:hover {
             background: #3158c9;
         }
 
-        .btn-secondary {
+        .secondary-btn {
             background: #1d263b;
             color: #d6defa;
             border: 1px solid #34405e;
         }
 
-        .btn-secondary:hover {
+        .secondary-btn:hover {
             background: #26334f;
         }
 
-        .preview-card {
-            background: #151d31;
-            border: 1px solid #293552;
+        .hero-panel {
+            background: rgba(15, 23, 41, 0.85);
+            border: 1px solid #34405e;
             border-radius: 22px;
-            padding: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            padding: 22px;
         }
 
-        .preview-card h2 {
-            margin-top: 0;
-            color: #ffffff;
-        }
-
-        .preview-item {
-            background: #0f1729;
-            border: 1px solid #25304a;
-            padding: 16px;
-            border-radius: 14px;
-            margin-top: 14px;
-        }
-
-        .preview-title {
-            font-weight: bold;
-            margin-bottom: 6px;
+        .hero-panel-title {
             color: #7aa2ff;
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 14px;
         }
 
-        .preview-info {
-            color: #aeb8d4;
-            font-size: 14px;
+        .hero-panel-item {
+            background: #101624;
+            border: 1px solid #293552;
+            border-radius: 14px;
+            padding: 14px;
+            margin-top: 10px;
+            color: #c5cce0;
             line-height: 1.5;
         }
 
-        .features {
-            padding: 50px 8%;
-            background: #0b1020;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 22px;
+        .hero-panel-item strong {
+            color: white;
         }
 
-        .feature-box {
+        .stats-grid {
+            margin-top: 28px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .stat-card {
             background: #151d31;
             border: 1px solid #293552;
             border-radius: 18px;
-            padding: 24px;
+            padding: 20px;
         }
 
-        .feature-box h3 {
-            margin-top: 0;
+        .stat-label {
+            color: #aeb8d4;
+            font-size: 14px;
+            margin-bottom: 9px;
+        }
+
+        .stat-number {
             color: #7aa2ff;
-        }
-
-        .feature-box p {
-            color: #c5cce0;
-            line-height: 1.6;
-            margin-bottom: 0;
-        }
-
-        .popular-section {
-            padding: 55px 8%;
+            font-size: 34px;
+            font-weight: bold;
         }
 
         .section-header {
+            margin-top: 48px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: end;
-            gap: 20px;
-            margin-bottom: 24px;
+            gap: 16px;
         }
 
         .section-header h2 {
             margin: 0;
-            font-size: 32px;
+            font-size: 30px;
         }
 
         .section-header p {
@@ -198,10 +219,52 @@
             line-height: 1.6;
         }
 
-        .section-header a {
+        .section-link {
             color: #7aa2ff;
             text-decoration: none;
             font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .feature-card {
+            background: #151d31;
+            border: 1px solid #293552;
+            border-radius: 18px;
+            padding: 22px;
+        }
+
+        .feature-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 16px;
+        background: #838a9aff;
+        border: 1px solid #34405e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+        }
+
+        .feature-icon img {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+        }
+
+        .feature-card h3 {
+            margin: 0 0 9px 0;
+        }
+
+        .feature-card p {
+            margin: 0;
+            color: #c5cce0;
+            line-height: 1.6;
         }
 
         .alert-error {
@@ -210,7 +273,7 @@
             padding: 14px;
             border-radius: 10px;
             color: #ffdada;
-            margin-bottom: 22px;
+            margin-bottom: 18px;
         }
 
         .games-grid {
@@ -239,8 +302,8 @@
             height: 145px;
             background: #0f1729;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             color: #8892b0;
         }
 
@@ -250,15 +313,16 @@
         }
 
         .game-title {
+            font-size: 18px;
             font-weight: bold;
-            font-size: 17px;
             margin-bottom: 8px;
+            line-height: 1.4;
         }
 
         .game-info {
             color: #aeb8d4;
             font-size: 14px;
-            margin-bottom: 6px;
+            margin-bottom: 7px;
             line-height: 1.4;
         }
 
@@ -299,78 +363,136 @@
             background: #26334f;
         }
 
+        .community-grid {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .community-card {
+            background: #151d31;
+            border: 1px solid #293552;
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .community-card h3 {
+            margin-top: 0;
+            font-size: 24px;
+        }
+
+        .community-card p {
+            color: #c5cce0;
+            line-height: 1.7;
+        }
+
+        .comment-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .comment-card {
+            background: #151d31;
+            border: 1px solid #293552;
+            border-radius: 16px;
+            padding: 17px;
+        }
+
+        .comment-game {
+            color: #7aa2ff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .comment-meta {
+            color: #aeb8d4;
+            font-size: 13px;
+            margin-bottom: 9px;
+        }
+
+        .comment-text {
+            color: #e6ebff;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
         .empty-box {
             background: #151d31;
             border: 1px solid #293552;
             border-radius: 18px;
             padding: 24px;
             color: #c5cce0;
+            line-height: 1.6;
         }
 
-        .project-note {
-            padding: 50px 8%;
-            background: #0b1020;
-        }
-
-        .note-card {
-            background: #151d31;
-            border: 1px solid #293552;
-            border-radius: 18px;
-            padding: 24px;
-            color: #c5cce0;
-            line-height: 1.7;
-        }
-
-        .note-card strong {
-            color: white;
-        }
-
-        .rawg-credit {
-            padding: 24px 8%;
-            text-align: center;
+        .footer {
+            margin-top: 55px;
+            padding-top: 24px;
+            border-top: 1px solid #293552;
             color: #8892b0;
-            background: #0b1020;
-            border-top: 1px solid #1f2a44;
+            line-height: 1.6;
             font-size: 14px;
         }
 
-        .rawg-credit a {
+        .footer a {
             color: #7aa2ff;
         }
 
-        @media (max-width: 900px) {
-            .hero {
+        @media (max-width: 1050px) {
+            .hero,
+            .community-grid {
                 grid-template-columns: 1fr;
-                padding-top: 45px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .navbar {
+                flex-direction: column;
+                gap: 14px;
+                text-align: center;
+            }
+
+            .navbar-links {
+                justify-content: center;
+            }
+
+            .container {
+                padding: 35px 6%;
+            }
+
+            .hero {
+                padding: 26px;
             }
 
             .hero h1 {
-                font-size: 38px;
+                font-size: 34px;
             }
 
-            .features {
+            .hero-actions {
+                display: grid;
+            }
+
+            .primary-btn,
+            .secondary-btn {
+                text-align: center;
+            }
+
+            .stats-grid {
                 grid-template-columns: 1fr;
             }
 
             .section-header {
                 flex-direction: column;
                 align-items: start;
-            }
-
-            .navbar {
-                flex-direction: column;
-                gap: 12px;
-                text-align: center;
-            }
-
-            .nav-links a {
-                display: inline-block;
-                margin: 5px 8px;
-            }
-
-            .logout-btn {
-                margin-left: 0;
-                margin-top: 8px;
             }
         }
     </style>
@@ -380,7 +502,7 @@
     <nav class="navbar">
         <div class="logo">GameVault</div>
 
-        <div class="nav-links">
+        <div class="navbar-links">
             <a href="{{ route('home') }}">Home</a>
             <a href="{{ route('games.index') }}">Cari Game</a>
 
@@ -401,109 +523,132 @@
         </div>
     </nav>
 
-    <section class="hero">
-        <div>
-            <h1>Cari game favorit, simpan ke wishlist, lalu diskusi bareng.</h1>
+    <div class="container">
+        <section class="hero">
+            <div>
+                <div class="hero-badge">Game catalog, wishlist, dan forum komunitas</div>
 
-            <p>
-                GameVault adalah aplikasi katalog game berbasis Laravel.
-                Pengguna dapat mencari informasi game dari RAWG API, melihat detail game,
-                menyimpan game ke wishlist pribadi, dan ikut berdiskusi di halaman game.
-            </p>
+                <h1>
+                    Simpan game favoritmu di <span>GameVault</span>.
+                </h1>
 
-            <div class="button-group">
-                <a href="{{ route('games.index') }}" class="btn btn-primary">Mulai Cari Game</a>
+                <p>
+                    GameVault membantu kamu mencari informasi game, melihat detail dari RAWG API,
+                    menyimpan game ke wishlist pribadi, mengatur status game, dan berdiskusi dengan user lain.
+                </p>
 
-                @auth
-                    <a href="{{ route('wishlist.index') }}" class="btn btn-secondary">Buka Wishlist</a>
-                    <a href="{{ route('dashboard') }}" class="btn btn-secondary">Dashboard</a>
-                @else
-                    <a href="{{ route('register') }}" class="btn btn-secondary">Buat Akun</a>
-                @endauth
-            </div>
-        </div>
+                <div class="hero-actions">
+                    <a href="{{ route('games.index') }}" class="primary-btn">Mulai Cari Game</a>
 
-        <div class="preview-card">
-            <h2>Fitur Utama</h2>
-
-            <div class="preview-item">
-                <div class="preview-title">Katalog Game</div>
-                <div class="preview-info">
-                    Menampilkan game dari RAWG API lengkap dengan rating, genre, platform, dan tanggal rilis.
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="secondary-btn">Buka Dashboard</a>
+                    @else
+                        <a href="{{ route('register') }}" class="secondary-btn">Buat Akun</a>
+                    @endauth
                 </div>
             </div>
 
-            <div class="preview-item">
-                <div class="preview-title">Wishlist Pribadi</div>
-                <div class="preview-info">
-                    User bisa menyimpan game yang ingin dimainkan, sedang dimainkan, selesai, atau favorit.
+            <div class="hero-panel">
+                <div class="hero-panel-title">Yang bisa dilakukan</div>
+
+                <div class="hero-panel-item">
+                    <strong>1. Cari game</strong><br>
+                    Temukan game berdasarkan nama, genre, platform, dan rating.
+                </div>
+
+                <div class="hero-panel-item">
+                    <strong>2. Simpan wishlist</strong><br>
+                    Simpan game yang ingin dimainkan, sedang dimainkan, selesai, atau favorit.
+                </div>
+
+                <div class="hero-panel-item">
+                    <strong>3. Diskusi game</strong><br>
+                    Tulis komentar pada halaman detail game dan lihat diskusi komunitas.
                 </div>
             </div>
+        </section>
 
-            <div class="preview-item">
-                <div class="preview-title">Forum Per-Game</div>
-                <div class="preview-info">
-                    Setiap game memiliki ruang komentar sendiri sehingga diskusi tidak tercampur.
-                </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">User Terdaftar</div>
+                <div class="stat-number">{{ $userCount }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Game di Wishlist</div>
+                <div class="stat-number">{{ $wishlistCount }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Komentar Forum</div>
+                <div class="stat-number">{{ $commentCount }}</div>
             </div>
         </div>
-    </section>
 
-    <section class="features">
-        <div class="feature-box">
-            <h3>Detail Game</h3>
-            <p>
-                Pengguna dapat melihat deskripsi, developer, publisher, rating,
-                platform, dan screenshot game.
-            </p>
-        </div>
-
-        <div class="feature-box">
-            <h3>Spesifikasi PC</h3>
-            <p>
-                Jika tersedia dari API, halaman detail menampilkan spesifikasi minimum
-                dan recommended untuk game tertentu.
-            </p>
-        </div>
-
-        <div class="feature-box">
-            <h3>Dashboard User</h3>
-            <p>
-                Dashboard menampilkan total wishlist, total komentar, game favorit,
-                dan aktivitas terbaru user.
-            </p>
-        </div>
-    </section>
-
-    <section class="popular-section">
         <div class="section-header">
             <div>
-                <h2>Game Populer</h2>
+                <h2>Fitur Utama</h2>
+                <p>Fitur yang dibuat untuk mendukung katalog game, wishlist user, dan komunitas diskusi.</p>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                <img src="{{ asset('icons/console.png') }}" alt="Console Icon">
+                </div>
+                <h3>Katalog Game</h3>
                 <p>
-                    Beberapa game dari RAWG API yang bisa langsung dibuka detailnya.
+                    Menampilkan daftar game dari RAWG API lengkap dengan rating, genre,
+                    platform, tanggal rilis, screenshot, dan detail game.
                 </p>
             </div>
 
-            <a href="{{ route('games.index') }}">Lihat Semua →</a>
+            <div class="feature-card">
+                <div class="feature-icon">
+                <img src="{{ asset('icons/wishlist.png') }}" alt="Wishlist Icon">
+                </div>
+                <h3>Wishlist Pribadi</h3>
+                <p>
+                    User dapat menyimpan game ke wishlist, mengubah status game,
+                    memfilter wishlist, dan membuka detail game kembali.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                <img src="{{ asset('icons/chat.png') }}" alt="Chat Icon">
+                </div>
+                <h3>Forum Game</h3>
+                <p>
+                    Setiap game memiliki area diskusi sendiri, dan halaman forum utama
+                    menampilkan aktivitas komentar komunitas.
+                </p>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <div>
+                <h2>Game Populer</h2>
+                <p>Beberapa game populer yang diambil langsung dari RAWG API.</p>
+            </div>
+
+            <a href="{{ route('games.index') }}" class="section-link">Lihat semua →</a>
         </div>
 
         @if ($error)
             <div class="alert-error">
                 {{ $error }}
             </div>
-        @endif
-
-        @if (!$error && $popularGames->isEmpty())
+        @elseif ($popularGames->isEmpty())
             <div class="empty-box">
-                Data game belum tersedia. Pastikan RAWG_API_KEY sudah diisi di file .env.
+                Data game populer belum bisa ditampilkan.
             </div>
-        @endif
-
-        @if (!$error && $popularGames->isNotEmpty())
+        @else
             <div class="games-grid">
                 @foreach ($popularGames as $game)
                     @php
-                        $genres = collect($game['genres'] ?? [])->pluck('name')->take(2)->join(', ');
+                                                $genres = collect($game['genres'] ?? [])->pluck('name')->take(2)->join(', ');
                         $platforms = collect($game['platforms'] ?? [])->pluck('platform.name')->take(2)->join(', ');
                     @endphp
 
@@ -549,21 +694,89 @@
                 @endforeach
             </div>
         @endif
-    </section>
 
-    <section class="project-note">
-        <div class="note-card">
-            <strong>GameVault</strong> dibuat sebagai project besar Pemrograman Web Lanjut
-            menggunakan Laravel, PHP, SQLite, Blade, dan RAWG API.
-            Data game berasal dari API, sedangkan data user, wishlist, dan komentar
-            disimpan di database lokal aplikasi.
+        <div class="section-header">
+            <div>
+                <h2>Aktivitas Komunitas</h2>
+                <p>Komentar terbaru dari user GameVault pada forum game.</p>
+            </div>
+
+            @auth
+                <a href="{{ route('forum.index') }}" class="section-link">Buka forum →</a>
+            @else
+                <a href="{{ route('login') }}" class="section-link">Login untuk diskusi →</a>
+            @endauth
         </div>
-    </section>
 
-    <footer class="rawg-credit">
-        Data game disediakan oleh <a href="https://rawg.io" target="_blank">RAWG</a>.
-        GameVault - Project Besar Pemrograman Web Lanjut.
-    </footer>
+        <div class="community-grid">
+            <div class="community-card">
+                <h3>Forum per-game</h3>
+
+                <p>
+                    Setiap game di GameVault memiliki ruang diskusi sendiri.
+                    User bisa membuka detail game, menulis komentar, lalu komentar tersebut akan tersimpan sesuai game yang dipilih.
+                </p>
+
+                <p>
+                    Halaman forum utama menampilkan semua diskusi komunitas,
+                    sehingga user bisa melihat game apa saja yang sedang dibahas.
+                </p>
+
+                <a href="{{ route('games.index') }}" class="primary-btn">
+                    Cari Game untuk Diskusi
+                </a>
+            </div>
+
+            <div>
+                @if ($recentComments->isEmpty())
+                    <div class="empty-box">
+                        Belum ada komentar komunitas. Login, buka detail game, lalu mulai tulis komentar pertama.
+                    </div>
+                @else
+                    <div class="comment-list">
+                        @foreach ($recentComments as $comment)
+                            <div class="comment-card">
+                                <div class="comment-game">
+                                    {{ $comment->game_name }}
+                                </div>
+
+                                <div class="comment-meta">
+                                    Oleh {{ $comment->user->name ?? 'User' }} |
+                                    {{ $comment->created_at->format('d M Y H:i') }}
+                                </div>
+
+                                <div class="comment-text">
+                                    {{ $comment->comment }}
+                                </div>
+
+                                <div style="margin-top: 12px;">
+                                    <a href="{{ route('games.show', $comment->rawg_game_id) }}" class="section-link">
+                                        Buka detail game →
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        </div>
+
+       <div class="footer">
+    <strong>GameVault</strong> dibuat sebagai project Pemrograman Web Lanjut.
+    Data game disediakan oleh <a href="https://rawg.io" target="_blank">RAWG</a>.
+    <br><br>
+
+    Icon attribution:
+    <a href="https://www.flaticon.com/free-icon/console_686589" target="_blank">
+        Console icon created by Good Ware - Flaticon
+    </a>,
+    <a href="https://www.flaticon.com/free-icon/wishlist_4379561" target="_blank">
+        Wishlist icon created by Pixel perfect - Flaticon
+    </a>,
+    <a href="https://www.flaticon.com/free-icon/chat_3820102" target="_blank">
+        Chat icon created by Freepik - Flaticon
+    </a>.
+</div>
 
 </body>
 </html>

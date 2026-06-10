@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GameComment;
+use App\Models\User;
+use App\Models\Wishlist;
 use App\Services\RawgService;
 
 class HomeController extends Controller
@@ -16,6 +19,22 @@ class HomeController extends Controller
 
         $error = $data['error'] ?? null;
 
-        return view('welcome', compact('popularGames', 'error'));
+        $userCount = User::count();
+        $wishlistCount = Wishlist::count();
+        $commentCount = GameComment::count();
+
+        $recentComments = GameComment::with('user')
+            ->latest()
+            ->take(4)
+            ->get();
+
+        return view('welcome', compact(
+            'popularGames',
+            'error',
+            'userCount',
+            'wishlistCount',
+            'commentCount',
+            'recentComments'
+        ));
     }
 }
