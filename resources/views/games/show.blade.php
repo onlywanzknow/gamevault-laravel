@@ -173,6 +173,28 @@
             background: #3158c9;
         }
 
+        .wishlist-saved {
+            margin-top: 22px;
+            background: #10291a;
+            border: 1px solid #2f8f4e;
+            border-radius: 14px;
+            padding: 16px;
+            color: #b9ffd0;
+            line-height: 1.6;
+        }
+
+        .wishlist-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 11px 15px;
+            border-radius: 10px;
+            background: #1d263b;
+            border: 1px solid #34405e;
+            color: #d6defa;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
         .login-note {
             margin-top: 22px;
             background: #0f1729;
@@ -511,21 +533,31 @@
                     </div>
 
                     @auth
-                        <form action="{{ route('wishlist.store') }}" method="POST">
-                            @csrf
+                        @if ($isWishlisted)
+                            <div class="wishlist-saved">
+                                Game ini sudah ada di wishlist kamu.
+                                <br>
+                                <a href="{{ route('wishlist.index') }}" class="wishlist-link">
+                                    Lihat Wishlist
+                                </a>
+                            </div>
+                        @else
+                            <form action="{{ route('wishlist.store') }}" method="POST">
+                                @csrf
 
-                            <input type="hidden" name="rawg_game_id" value="{{ $game['id'] }}">
-                            <input type="hidden" name="game_name" value="{{ $game['name'] ?? 'Unknown Game' }}">
-                            <input type="hidden" name="game_slug" value="{{ $game['slug'] ?? '' }}">
-                            <input type="hidden" name="game_image" value="{{ $game['background_image'] ?? '' }}">
-                            <input type="hidden" name="game_rating" value="{{ $game['rating'] ?? '' }}">
-                            <input type="hidden" name="game_released" value="{{ $game['released'] ?? '' }}">
-                            <input type="hidden" name="status" value="Ingin dimainkan">
+                                <input type="hidden" name="rawg_game_id" value="{{ $game['id'] }}">
+                                <input type="hidden" name="game_name" value="{{ $game['name'] ?? 'Unknown Game' }}">
+                                <input type="hidden" name="game_slug" value="{{ $game['slug'] ?? '' }}">
+                                <input type="hidden" name="game_image" value="{{ $game['background_image'] ?? '' }}">
+                                <input type="hidden" name="game_rating" value="{{ $game['rating'] ?? '' }}">
+                                <input type="hidden" name="game_released" value="{{ $game['released'] ?? '' }}">
+                                <input type="hidden" name="status" value="Ingin dimainkan">
 
-                            <button type="submit" class="wishlist-btn">
-                                Tambah ke Wishlist
-                            </button>
-                        </form>
+                                <button type="submit" class="wishlist-btn">
+                                    Tambah ke Wishlist
+                                </button>
+                            </form>
+                        @endif
                     @else
                         <div class="login-note">
                             Login dulu untuk menyimpan game ini ke wishlist.

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\GameComment;
+use App\Models\Wishlist;
 use App\Services\RawgService;
 use Illuminate\Http\Request;
 
@@ -89,6 +90,7 @@ class GameController extends Controller
 
         $screenshots = [];
         $comments = collect();
+        $isWishlisted = false;
 
         if ($game) {
             $screenshots = $rawgService->getGameScreenshots($id);
@@ -97,8 +99,20 @@ class GameController extends Controller
                 ->where('rawg_game_id', $game['id'])
                 ->latest()
                 ->get();
+
+            if (auth()->check()) {
+                $isWishlisted = Wishlist::where('user_id', auth()->id())
+                    ->where('rawg_game_id', $game['id'])
+                    ->exists();
+            }
         }
 
-        return view('games.show', compact('game', 'screenshots', 'comments', 'error'));
+        return view('games.show', compact(
+            'game',
+            'screenshots',
+            'comments',
+            'isWishlisted',
+            'error'
+        ));
     }
 }
