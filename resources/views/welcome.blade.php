@@ -388,6 +388,7 @@
                 <a href="{{ route('wishlist.index') }}">Wishlist</a>
                 <a href="{{ route('forum.index') }}">Forum</a>
                 <a href="{{ route('dashboard') }}">Dashboard</a>
+                <a href="{{ route('profile.edit') }}">Profile</a>
 
                 <form action="{{ route('logout') }}" method="POST" class="logout-form">
                     @csrf

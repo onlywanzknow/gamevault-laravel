@@ -6,6 +6,7 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
@@ -16,11 +17,17 @@ Route::get('/games', [GameController::class, 'index'])
 Route::get('/games/{id}', [GameController::class, 'show'])
     ->name('games.show');
 
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register'])->name('register.store');
+Route::get('/register', [AuthController::class, 'showRegister'])
+    ->name('register');
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.store');
+Route::post('/register', [AuthController::class, 'register'])
+    ->name('register.store');
+
+Route::get('/login', [AuthController::class, 'showLogin'])
+    ->name('login');
+
+Route::post('/login', [AuthController::class, 'login'])
+    ->name('login.store');
 
 Route::get('/dashboard', [AuthController::class, 'dashboard'])
     ->middleware('auth')
@@ -29,6 +36,14 @@ Route::get('/dashboard', [AuthController::class, 'dashboard'])
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
+
+Route::get('/profile', [ProfileController::class, 'edit'])
+    ->middleware('auth')
+    ->name('profile.edit');
+
+Route::patch('/profile', [ProfileController::class, 'update'])
+    ->middleware('auth')
+    ->name('profile.update');
 
 Route::get('/wishlist', [WishlistController::class, 'index'])
     ->middleware('auth')

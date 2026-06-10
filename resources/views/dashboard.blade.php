@@ -378,6 +378,7 @@
             <a href="{{ route('games.index') }}">Cari Game</a>
             <a href="{{ route('wishlist.index') }}">Wishlist</a>
             <a href="{{ route('forum.index') }}">Forum</a>
+            <a href="{{ route('profile.edit') }}">Profile</a>
 
             <form action="{{ route('logout') }}" method="POST" class="logout-form">
                 @csrf
