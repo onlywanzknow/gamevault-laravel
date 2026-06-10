@@ -7,13 +7,50 @@ use Illuminate\Http\Request;
 
 class WishlistController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = trim($request->get('search', ''));
+        $selectedStatus = $request->get('status', '');
+
+        $statusOptions = [
+            '' => 'Semua Status',
+            'Ingin dimainkan' => 'Ingin dimainkan',
+            'Sedang dimainkan' => 'Sedang dimainkan',
+            'Selesai' => 'Selesai',
+            'Favorit' => 'Favorit',
+        ];
+
+        if (!array_key_exists($selectedStatus, $statusOptions)) {
+            $selectedStatus = '';
+        }
+
+        $baseQuery = Wishlist::where('user_id', auth()->id());
+
+        $statusCounts = [
+            'total' => (clone $baseQuery)->count(),
+            'ingin_dimainkan' => (clone $baseQuery)->where('status', 'Ingin dimainkan')->count(),
+            'sedang_dimainkan' => (clone $baseQuery)->where('status', 'Sedang dimainkan')->count(),
+            'selesai' => (clone $baseQuery)->where('status', 'Selesai')->count(),
+            'favorit' => (clone $baseQuery)->where('status', 'Favorit')->count(),
+        ];
+
         $wishlists = Wishlist::where('user_id', auth()->id())
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where('game_name', 'like', '%' . $search . '%');
+            })
+            ->when($selectedStatus !== '', function ($query) use ($selectedStatus) {
+                $query->where('status', $selectedStatus);
+            })
             ->latest()
             ->get();
 
-        return view('wishlists.index', compact('wishlists'));
+        return view('wishlists.index', compact(
+            'wishlists',
+            'search',
+            'selectedStatus',
+            'statusOptions',
+            'statusCounts'
+        ));
     }
 
     public function store(Request $request)

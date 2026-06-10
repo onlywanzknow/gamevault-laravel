@@ -43,6 +43,7 @@
 
         h1 {
             margin-bottom: 10px;
+            font-size: 38px;
         }
 
         .subtitle {
@@ -67,6 +68,32 @@
             border-radius: 10px;
             color: #ffdada;
             margin-bottom: 18px;
+        }
+
+        .stats-grid {
+            margin-top: 28px;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .stat-card {
+            background: #151d31;
+            border: 1px solid #293552;
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .stat-label {
+            color: #aeb8d4;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .stat-number {
+            color: #7aa2ff;
+            font-size: 28px;
+            font-weight: bold;
         }
 
         .top-actions {
@@ -97,6 +124,70 @@
             font-weight: bold;
         }
 
+        .filter-box {
+            margin-top: 28px;
+            background: #151d31;
+            border: 1px solid #293552;
+            border-radius: 18px;
+            padding: 22px;
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .form-group label {
+            display: block;
+            color: #d6defa;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            max-width: 100%;
+            padding: 13px;
+            border-radius: 10px;
+            border: 1px solid #34405e;
+            background: #0f1729;
+            color: white;
+            display: block;
+            font-size: 14px;
+        }
+
+        input::placeholder {
+            color: #7d869c;
+        }
+
+        .filter-btn {
+            padding: 13px 18px;
+            border-radius: 10px;
+            border: none;
+            background: #4169e1;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .reset-link {
+            display: inline-block;
+            margin-top: 12px;
+            color: #7aa2ff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .result-info {
+            margin-top: 24px;
+            color: #c5cce0;
+            line-height: 1.6;
+        }
+
         .empty-box {
             margin-top: 30px;
             background: #151d31;
@@ -104,6 +195,7 @@
             border-radius: 18px;
             padding: 28px;
             color: #c5cce0;
+            line-height: 1.6;
         }
 
         .grid {
@@ -170,22 +262,10 @@
             margin-top: 14px;
         }
 
-        label {
+        .status-form label {
             display: block;
             margin-bottom: 6px;
             color: #d6defa;
-            font-size: 14px;
-        }
-
-        select {
-            width: 100%;
-            max-width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid #34405e;
-            background: #0f1729;
-            color: white;
-            display: block;
             font-size: 14px;
         }
 
@@ -241,6 +321,20 @@
             color: #7aa2ff;
         }
 
+        @media (max-width: 1000px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-btn {
+                width: 100%;
+            }
+        }
+
         @media (max-width: 700px) {
             .navbar {
                 flex-direction: column;
@@ -255,6 +349,10 @@
 
             .container {
                 padding: 35px 6%;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -276,8 +374,8 @@
         <h1>Wishlist Saya</h1>
 
         <p class="subtitle">
-            Daftar game yang kamu simpan dari halaman detail game. Kamu bisa mengubah status game,
-            membuka detailnya lagi, atau menghapusnya dari wishlist.
+            Daftar game yang kamu simpan dari halaman detail game. Kamu bisa mencari game,
+            memfilter berdasarkan status, mengubah status, membuka detail, atau menghapus game dari wishlist.
         </p>
 
         @if (session('success'))
@@ -296,15 +394,89 @@
             </div>
         @endif
 
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Wishlist</div>
+                <div class="stat-number">{{ $statusCounts['total'] }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Ingin Dimainkan</div>
+                <div class="stat-number">{{ $statusCounts['ingin_dimainkan'] }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Sedang Dimainkan</div>
+                <div class="stat-number">{{ $statusCounts['sedang_dimainkan'] }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Selesai</div>
+                <div class="stat-number">{{ $statusCounts['selesai'] }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Favorit</div>
+                <div class="stat-number">{{ $statusCounts['favorit'] }}</div>
+            </div>
+        </div>
+
         <div class="top-actions">
             <a href="{{ route('games.index') }}" class="primary-link">Cari Game Baru</a>
             <a href="{{ route('dashboard') }}" class="secondary-link">Kembali ke Dashboard</a>
         </div>
 
+        <div class="filter-box">
+            <form action="{{ route('wishlist.index') }}" method="GET" class="filter-form">
+                <div class="form-group">
+                    <label>Cari Nama Game</label>
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ $search }}"
+                        placeholder="Contoh: GTA, Minecraft, Elden Ring"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status">
+                        @foreach ($statusOptions as $value => $label)
+                            <option value="{{ $value }}" {{ $selectedStatus === $value ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <button type="submit" class="filter-btn">Terapkan</button>
+            </form>
+
+            @if ($search || $selectedStatus)
+                <a href="{{ route('wishlist.index') }}" class="reset-link">Reset filter wishlist</a>
+            @endif
+        </div>
+
+        <div class="result-info">
+            @if ($search || $selectedStatus)
+                Menampilkan hasil wishlist
+                @if ($search)
+                    untuk pencarian <strong>{{ $search }}</strong>
+                @endif
+
+                @if ($selectedStatus)
+                    dengan status <strong>{{ $selectedStatus }}</strong>
+                @endif
+                .
+            @else
+                Menampilkan semua game yang kamu simpan.
+            @endif
+        </div>
+
         @if ($wishlists->isEmpty())
             <div class="empty-box">
-                Belum ada game di wishlist. Buka halaman Cari Game, pilih salah satu game,
-                lalu tekan tombol Tambah ke Wishlist.
+                Tidak ada game yang cocok. Coba ubah pencarian/filter, atau buka halaman Cari Game
+                lalu tambahkan game baru ke wishlist.
             </div>
         @else
             <div class="grid">
