@@ -340,7 +340,9 @@
                         </div>
 
                         <div class="card-footer">
-                            <a href="#" class="detail-btn">Detail nanti</a>
+                            <a href="{{ route('games.show', $game['id']) }}" class="detail-btn">
+                                Lihat Detail
+                            </a>
                         </div>
                     </div>
                 @endforeach

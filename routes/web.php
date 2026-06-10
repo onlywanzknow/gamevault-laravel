@@ -13,6 +13,9 @@ Route::get('/', function () {
 Route::get('/games', [GameController::class, 'index'])
     ->name('games.index');
 
+Route::get('/games/{id}', [GameController::class, 'show'])
+    ->name('games.show');
+
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 

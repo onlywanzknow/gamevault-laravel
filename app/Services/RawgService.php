@@ -55,4 +55,63 @@ class RawgService
             ];
         }
     }
+
+    public function getGameDetail(int|string $id): array
+    {
+        if (!$this->hasApiKey()) {
+            return [
+                'game' => null,
+                'error' => 'RAWG_API_KEY belum diisi di file .env.',
+            ];
+        }
+
+        try {
+            $response = Http::acceptJson()
+                ->timeout(15)
+                ->get($this->baseUrl . '/games/' . $id, [
+                    'key' => env('RAWG_API_KEY'),
+                ]);
+
+            if (!$response->successful()) {
+                return [
+                    'game' => null,
+                    'error' => 'Gagal mengambil detail game dari RAWG API. Status: ' . $response->status(),
+                ];
+            }
+
+            return [
+                'game' => $response->json(),
+                'error' => null,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'game' => null,
+                'error' => 'Terjadi masalah koneksi ke RAWG API: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    public function getGameScreenshots(int|string $id): array
+    {
+        if (!$this->hasApiKey()) {
+            return [];
+        }
+
+        try {
+            $response = Http::acceptJson()
+                ->timeout(15)
+                ->get($this->baseUrl . '/games/' . $id . '/screenshots', [
+                    'key' => env('RAWG_API_KEY'),
+                    'page_size' => 6,
+                ]);
+
+            if (!$response->successful()) {
+                return [];
+            }
+
+            return $response->json('results') ?? [];
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
 }

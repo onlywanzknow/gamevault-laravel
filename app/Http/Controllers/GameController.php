@@ -18,4 +18,19 @@ class GameController extends Controller
 
         return view('games.index', compact('games', 'search', 'error'));
     }
+
+    public function show(int|string $id, RawgService $rawgService)
+    {
+        $detailData = $rawgService->getGameDetail($id);
+        $game = $detailData['game'];
+        $error = $detailData['error'];
+
+        $screenshots = [];
+
+        if ($game) {
+            $screenshots = $rawgService->getGameScreenshots($id);
+        }
+
+        return view('games.show', compact('game', 'screenshots', 'error'));
+    }
 }
