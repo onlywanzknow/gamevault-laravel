@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -147,7 +151,8 @@
         }
 
         input,
-        select {
+        select,
+        textarea {
             width: 100%;
             max-width: 100%;
             padding: 13px;
@@ -157,9 +162,11 @@
             color: white;
             display: block;
             font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
-        input::placeholder {
+        input::placeholder,
+        textarea::placeholder {
             color: #7d869c;
         }
 
@@ -256,6 +263,89 @@
             border-radius: 999px;
             color: #d6defa;
             font-size: 13px;
+        }
+
+        .note-preview {
+            margin-top: 14px;
+            background: #101827;
+            border: 1px solid #34405e;
+            border-radius: 12px;
+            padding: 11px;
+            color: #c5cce0;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .note-preview strong {
+            color: #d6defa;
+        }
+
+        .note-empty {
+            color: #8892b0;
+            font-style: italic;
+        }
+
+        .note-form {
+            display: none;
+            margin-top: 12px;
+            background: #101827;
+            border: 1px solid #34405e;
+            border-radius: 14px;
+            padding: 12px;
+        }
+
+        .note-form.active {
+            display: block;
+        }
+
+        .note-form label {
+            display: block;
+            margin-bottom: 7px;
+            color: #d6defa;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .note-form textarea {
+            min-height: 85px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .note-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .note-toggle-btn,
+        .note-save-btn,
+        .note-cancel-btn {
+            margin-top: 10px;
+            padding: 9px 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .note-toggle-btn {
+            background: #1d263b;
+            color: #d6defa;
+            border: 1px solid #34405e;
+        }
+
+        .note-save-btn {
+            background: #4169e1;
+            color: white;
+            border: none;
+        }
+
+        .note-cancel-btn {
+            background: #1d263b;
+            color: #d6defa;
+            border: 1px solid #34405e;
         }
 
         .status-form {
@@ -439,8 +529,8 @@
 
         <p class="subtitle">
             Daftar game yang kamu simpan dari halaman detail game. Kamu bisa mencari game,
-            memfilter berdasarkan status, mengurutkan daftar, mengubah status, membuka detail,
-            atau menghapus game dari wishlist.
+            memfilter berdasarkan status, mengurutkan daftar, menambahkan catatan pribadi,
+            mengubah status, membuka detail, atau menghapus game dari wishlist.
         </p>
 
         @if (session('success'))
@@ -545,7 +635,7 @@
                     dengan status <strong>{{ $selectedStatus }}</strong>
                 @endif
 
-                dengan urutan <strong>{{ $sortOptions[$selectedSort] ?? 'Terbaru' }}</strong>.
+                dengan urutan <strong>{{ $sortOptions[$selectedSort] ?? 'Terbaru Ditambahkan' }}</strong>.
             @else
                 Menampilkan semua game yang kamu simpan. Total hasil: <strong>{{ $wishlists->total() }}</strong>.
             @endif
@@ -578,6 +668,57 @@
                             </div>
 
                             <span class="status">{{ $item->status }}</span>
+
+                            <div class="note-preview">
+                                <strong>Catatan:</strong>
+
+                                @if ($item->personal_note)
+                                    {{ Str::limit($item->personal_note, 80) }}
+                                @else
+                                    <span class="note-empty">Belum ada catatan.</span>
+                                @endif
+
+                                <br>
+
+                                <button
+                                    type="button"
+                                    class="note-toggle-btn"
+                                    id="note-button-{{ $item->id }}"
+                                    onclick="showNoteForm({{ $item->id }})"
+                                >
+                                    {{ $item->personal_note ? 'Edit Catatan' : 'Tambah Catatan' }}
+                                </button>
+                            </div>
+
+                            <form
+                                action="{{ route('wishlist.updateNote', $item->id) }}"
+                                method="POST"
+                                class="note-form"
+                                id="note-form-{{ $item->id }}"
+                            >
+                                @csrf
+                                @method('PATCH')
+
+                                <label>{{ $item->personal_note ? 'Edit Catatan Pribadi' : 'Tambah Catatan Pribadi' }}</label>
+
+                                <textarea
+                                    name="personal_note"
+                                    maxlength="1000"
+                                    placeholder="Contoh: Mau dimainkan setelah ujian, tunggu diskon, atau main bareng teman."
+                                >{{ old('personal_note', $item->personal_note) }}</textarea>
+
+                                <div class="note-actions">
+                                    <button type="submit" class="note-save-btn">Simpan Catatan</button>
+
+                                    <button
+                                        type="button"
+                                        class="note-cancel-btn"
+                                        onclick="hideNoteForm({{ $item->id }})"
+                                    >
+                                        Batal
+                                    </button>
+                                </div>
+                            </form>
 
                             <form action="{{ route('wishlist.updateStatus', $item->id) }}" method="POST" class="status-form">
                                 @csrf
@@ -659,6 +800,34 @@
             Data game berasal dari <a href="https://rawg.io" target="_blank">RAWG</a>.
         </div>
     </div>
+
+    <script>
+        function showNoteForm(itemId) {
+            const form = document.getElementById('note-form-' + itemId);
+            const button = document.getElementById('note-button-' + itemId);
+
+            if (form) {
+                form.classList.add('active');
+            }
+
+            if (button) {
+                button.style.display = 'none';
+            }
+        }
+
+        function hideNoteForm(itemId) {
+            const form = document.getElementById('note-form-' + itemId);
+            const button = document.getElementById('note-button-' + itemId);
+
+            if (form) {
+                form.classList.remove('active');
+            }
+
+            if (button) {
+                button.style.display = 'inline-block';
+            }
+        }
+    </script>
 
 </body>
 </html>

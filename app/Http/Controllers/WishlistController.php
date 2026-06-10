@@ -106,6 +106,7 @@ class WishlistController extends Controller
             'game_rating' => 'nullable|numeric|min:0|max:5',
             'game_released' => 'nullable|date',
             'status' => 'required|string|max:50',
+            'personal_note' => 'nullable|string|max:1000',
         ]);
 
         $exists = Wishlist::where('user_id', auth()->id())
@@ -125,6 +126,7 @@ class WishlistController extends Controller
             'game_rating' => $request->game_rating,
             'game_released' => $request->game_released,
             'status' => $request->status,
+            'personal_note' => $request->personal_note,
         ]);
 
         return back()->with('success', 'Game berhasil ditambahkan ke wishlist.');
@@ -145,6 +147,23 @@ class WishlistController extends Controller
         ]);
 
         return back()->with('success', 'Status wishlist berhasil diperbarui.');
+    }
+
+    public function updateNote(Request $request, Wishlist $wishlist)
+    {
+        if ($wishlist->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'personal_note' => 'nullable|string|max:1000',
+        ]);
+
+        $wishlist->update([
+            'personal_note' => $request->personal_note,
+        ]);
+
+        return back()->with('success', 'Catatan wishlist berhasil disimpan.');
     }
 
     public function destroy(Wishlist $wishlist)

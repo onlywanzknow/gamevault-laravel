@@ -15,6 +15,7 @@ class Wishlist extends Model
         'game_rating',
         'game_released',
         'status',
+        'personal_note',
     ];
 
     public function user()
